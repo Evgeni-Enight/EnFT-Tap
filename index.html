@@ -4,12 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>EnFT Tap · Хардкорный мемкоин</title>
+  
+  <!-- Подключаем шрифты -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;700;900&family=Montserrat:wght@400;600;800&family=Play:wght@400;700&family=Press+Start+2P&family=Russo+One&display=swap" rel="stylesheet">
+  
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
@@ -22,26 +25,73 @@
       justify-content: center;
       padding: 16px;
       transition: background-image 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      position: relative;
+    }
+
+    /* Неоновая рамка body */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 2px solid #ff8c00;
+      border-radius: 50px;
+      pointer-events: none;
+      box-shadow: 0 0 30px #ff8c00, inset 0 0 30px #ff8c0040;
+      transition: all 0.3s ease;
+      z-index: 1;
     }
 
     /* Фоны */
     body.bg-default { background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%); }
+    body.bg-default::before { border-color: #ff8c00; box-shadow: 0 0 30px #ff8c00, inset 0 0 30px #ff8c0040; }
+    
     body.bg-neon { background-image: linear-gradient(135deg, #0a0a2e 0%, #1a0a2e 50%, #0a1a2e 100%); }
+    body.bg-neon::before { border-color: #00ffff; box-shadow: 0 0 30px #00ffff, inset 0 0 30px #00ffff40; }
+    
     body.bg-gold { background-image: radial-gradient(circle at 70% 30%, #3a2a0a 0%, #0a0a05 100%); }
+    body.bg-gold::before { border-color: #ffd700; box-shadow: 0 0 30px #ffd700, inset 0 0 30px #ffd70040; }
+    
     body.bg-matrix { background-image: linear-gradient(0deg, #0a1a0a 0%, #020302 100%); }
+    body.bg-matrix::before { border-color: #00ff00; box-shadow: 0 0 30px #00ff00, inset 0 0 30px #00ff0040; }
+    
     body.bg-sunset { background-image: linear-gradient(45deg, #2e0a0a 0%, #2e1a0a 50%, #1a0a2e 100%); }
+    body.bg-sunset::before { border-color: #ff4500; box-shadow: 0 0 30px #ff4500, inset 0 0 30px #ff450040; }
+    
     body.bg-ocean { background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%); }
+    body.bg-ocean::before { border-color: #1e90ff; box-shadow: 0 0 30px #1e90ff, inset 0 0 30px #1e90ff40; }
+
+    /* Шрифты */
+    body.font-inter { font-family: 'Inter', sans-serif; }
+    body.font-roboto { font-family: 'Roboto', sans-serif; }
+    body.font-montserrat { font-family: 'Montserrat', sans-serif; }
+    body.font-play { font-family: 'Play', sans-serif; }
+    body.font-press-start { font-family: 'Press Start 2P', cursive; }
+    body.font-russo { font-family: 'Russo One', sans-serif; }
 
     .game-container {
       max-width: 500px;
       width: 100%;
       background: rgba(8, 6, 12, 0.85);
       backdrop-filter: blur(12px);
-      border: 1px solid #ff8c00;
+      border: 1px solid;
       border-radius: 40px;
       padding: 24px 20px 30px;
-      box-shadow: 0 20px 40px #000, 0 0 20px #ff8c0040;
+      box-shadow: 0 20px 40px #000;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
     }
+
+    body.bg-default .game-container { border-color: #ff8c00; box-shadow: 0 20px 40px #000, 0 0 20px #ff8c0040; }
+    body.bg-neon .game-container { border-color: #00ffff; box-shadow: 0 20px 40px #000, 0 0 20px #00ffff40; }
+    body.bg-gold .game-container { border-color: #ffd700; box-shadow: 0 20px 40px #000, 0 0 20px #ffd70040; }
+    body.bg-matrix .game-container { border-color: #00ff00; box-shadow: 0 20px 40px #000, 0 0 20px #00ff0040; }
+    body.bg-sunset .game-container { border-color: #ff4500; box-shadow: 0 20px 40px #000, 0 0 20px #ff450040; }
+    body.bg-ocean .game-container { border-color: #1e90ff; box-shadow: 0 20px 40px #000, 0 0 20px #1e90ff40; }
 
     /* Вкладки */
     .tabs {
@@ -54,7 +104,7 @@
       flex: 1;
       padding: 10px;
       background: #1a1425;
-      border: 1px solid #ff8c0050;
+      border: 1px solid;
       border-radius: 30px;
       color: #b89b72;
       font-size: 14px;
@@ -63,11 +113,24 @@
       transition: 0.2s;
     }
 
+    body.bg-default .tab { border-color: #ff8c0050; }
+    body.bg-neon .tab { border-color: #00ffff50; color: #88ffff; }
+    body.bg-gold .tab { border-color: #ffd70050; color: #ffdca8; }
+    body.bg-matrix .tab { border-color: #00ff0050; color: #88ff88; }
+    body.bg-sunset .tab { border-color: #ff450050; color: #ffaa88; }
+    body.bg-ocean .tab { border-color: #1e90ff50; color: #88ccff; }
+
     .tab.active {
       background: #ff8c00;
       color: #0a0a0f;
       font-weight: 700;
     }
+
+    body.bg-neon .tab.active { background: #00ffff; }
+    body.bg-gold .tab.active { background: #ffd700; }
+    body.bg-matrix .tab.active { background: #00ff00; }
+    body.bg-sunset .tab.active { background: #ff4500; }
+    body.bg-ocean .tab.active { background: #1e90ff; }
 
     /* Экраны */
     .screen {
@@ -87,8 +150,15 @@
       padding: 10px 15px;
       background: #1a142580;
       border-radius: 50px;
-      border: 1px solid #ff8c0050;
+      border: 1px solid;
     }
+
+    body.bg-default .profile-section { border-color: #ff8c0050; }
+    body.bg-neon .profile-section { border-color: #00ffff50; }
+    body.bg-gold .profile-section { border-color: #ffd70050; }
+    body.bg-matrix .profile-section { border-color: #00ff0050; }
+    body.bg-sunset .profile-section { border-color: #ff450050; }
+    body.bg-ocean .profile-section { border-color: #1e90ff50; }
 
     .profile-info {
       display: flex;
@@ -109,21 +179,39 @@
       color: #0a0a0f;
     }
 
+    body.bg-neon .profile-avatar { background: linear-gradient(135deg, #00ffff, #00cccc); }
+    body.bg-gold .profile-avatar { background: linear-gradient(135deg, #ffd700, #ffaa00); }
+    body.bg-matrix .profile-avatar { background: linear-gradient(135deg, #00ff00, #00cc00); }
+    body.bg-sunset .profile-avatar { background: linear-gradient(135deg, #ff4500, #cc3300); }
+    body.bg-ocean .profile-avatar { background: linear-gradient(135deg, #1e90ff, #0066cc); }
+
     .profile-name {
       font-size: 16px;
       font-weight: 600;
       color: #ffdca8;
     }
 
+    body.bg-neon .profile-name { color: #aaffff; }
+    body.bg-gold .profile-name { color: #ffeaa8; }
+    body.bg-matrix .profile-name { color: #aaffaa; }
+    body.bg-sunset .profile-name { color: #ffccaa; }
+    body.bg-ocean .profile-name { color: #aaccff; }
+
     .logout-btn {
       background: none;
-      border: 1px solid #ff8c0080;
-      color: #b89b72;
+      border: 1px solid;
       padding: 6px 15px;
       border-radius: 30px;
       font-size: 12px;
       cursor: pointer;
     }
+
+    body.bg-default .logout-btn { border-color: #ff8c0080; color: #b89b72; }
+    body.bg-neon .logout-btn { border-color: #00ffff80; color: #88aaaa; }
+    body.bg-gold .logout-btn { border-color: #ffd70080; color: #ccaa66; }
+    body.bg-matrix .logout-btn { border-color: #00ff0080; color: #88aa88; }
+    body.bg-sunset .logout-btn { border-color: #ff450080; color: #cc8877; }
+    body.bg-ocean .logout-btn { border-color: #1e90ff80; color: #8899cc; }
 
     /* Баланс */
     .balance-section {
@@ -135,17 +223,28 @@
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 3px;
-      color: #cc9f5f;
       text-transform: uppercase;
     }
+
+    body.bg-default .balance-label { color: #cc9f5f; }
+    body.bg-neon .balance-label { color: #88cccc; }
+    body.bg-gold .balance-label { color: #ddbb66; }
+    body.bg-matrix .balance-label { color: #88cc88; }
+    body.bg-sunset .balance-label { color: #cc9988; }
+    body.bg-ocean .balance-label { color: #8899dd; }
 
     .balance-value {
       font-size: 56px;
       font-weight: 800;
-      color: #ffd28f;
-      text-shadow: 0 0 30px #ff8c00;
       line-height: 1.2;
     }
+
+    body.bg-default .balance-value { color: #ffd28f; text-shadow: 0 0 30px #ff8c00; }
+    body.bg-neon .balance-value { color: #aaffff; text-shadow: 0 0 30px #00ffff; }
+    body.bg-gold .balance-value { color: #ffeeaa; text-shadow: 0 0 30px #ffd700; }
+    body.bg-matrix .balance-value { color: #aaffaa; text-shadow: 0 0 30px #00ff00; }
+    body.bg-sunset .balance-value { color: #ffccbb; text-shadow: 0 0 30px #ff4500; }
+    body.bg-ocean .balance-value { color: #bbddff; text-shadow: 0 0 30px #1e90ff; }
 
     /* Статы */
     .stats-row {
@@ -155,8 +254,15 @@
       border-radius: 50px;
       padding: 12px;
       margin: 20px 0;
-      border: 1px solid #ff8c0050;
+      border: 1px solid;
     }
+
+    body.bg-default .stats-row { border-color: #ff8c0050; }
+    body.bg-neon .stats-row { border-color: #00ffff50; }
+    body.bg-gold .stats-row { border-color: #ffd70050; }
+    body.bg-matrix .stats-row { border-color: #00ff0050; }
+    body.bg-sunset .stats-row { border-color: #ff450050; }
+    body.bg-ocean .stats-row { border-color: #1e90ff50; }
 
     .stat-item {
       text-align: center;
@@ -164,15 +270,27 @@
 
     .stat-label {
       font-size: 12px;
-      color: #b89b72;
       text-transform: uppercase;
     }
+
+    body.bg-default .stat-label { color: #b89b72; }
+    body.bg-neon .stat-label { color: #88bbbb; }
+    body.bg-gold .stat-label { color: #ccaa77; }
+    body.bg-matrix .stat-label { color: #88bb88; }
+    body.bg-sunset .stat-label { color: #bb9988; }
+    body.bg-ocean .stat-label { color: #88aacc; }
 
     .stat-value {
       font-size: 24px;
       font-weight: 700;
-      color: #ffd7a0;
     }
+
+    body.bg-default .stat-value { color: #ffd7a0; }
+    body.bg-neon .stat-value { color: #aaffff; }
+    body.bg-gold .stat-value { color: #ffdd99; }
+    body.bg-matrix .stat-value { color: #aaffaa; }
+    body.bg-sunset .stat-value { color: #ffbbaa; }
+    body.bg-ocean .stat-value { color: #aaccff; }
 
     /* Кнопка тапа */
     .tap-area {
@@ -187,8 +305,14 @@
       cursor: pointer;
       border-radius: 50%;
       transition: all 0.1s;
-      filter: drop-shadow(0 0 20px #ff8c00);
     }
+
+    body.bg-default .coin-button { filter: drop-shadow(0 0 20px #ff8c00); }
+    body.bg-neon .coin-button { filter: drop-shadow(0 0 20px #00ffff); }
+    body.bg-gold .coin-button { filter: drop-shadow(0 0 20px #ffd700); }
+    body.bg-matrix .coin-button { filter: drop-shadow(0 0 20px #00ff00); }
+    body.bg-sunset .coin-button { filter: drop-shadow(0 0 20px #ff4500); }
+    body.bg-ocean .coin-button { filter: drop-shadow(0 0 20px #1e90ff); }
 
     .coin-button:active {
       transform: scale(0.9);
@@ -197,20 +321,54 @@
     .coin-gfx {
       width: 180px;
       height: 180px;
-      background: radial-gradient(circle at 30% 25%, #ffe4b5, #d4891a 70%, #7a4f0e);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 40px #ff8c00, inset 0 -5px 10px #00000080, inset 0 5px 10px #fff3cf;
-      border: 3px solid #ffc864;
+      border: 3px solid;
       transition: all 0.1s;
     }
 
+    body.bg-default .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #ffe4b5, #d4891a 70%, #7a4f0e);
+      border-color: #ffc864;
+      box-shadow: 0 0 40px #ff8c00, inset 0 -5px 10px #00000080, inset 0 5px 10px #fff3cf;
+    }
+
+    body.bg-neon .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #aaffff, #00aaaa 70%, #005555);
+      border-color: #88ffff;
+      box-shadow: 0 0 40px #00ffff, inset 0 -5px 10px #00000080, inset 0 5px 10px #aaffff;
+    }
+
+    body.bg-gold .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #ffffaa, #cc9900 70%, #664d00);
+      border-color: #ffdd88;
+      box-shadow: 0 0 40px #ffd700, inset 0 -5px 10px #00000080, inset 0 5px 10px #ffffaa;
+    }
+
+    body.bg-matrix .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #aaffaa, #00aa00 70%, #005500);
+      border-color: #88ff88;
+      box-shadow: 0 0 40px #00ff00, inset 0 -5px 10px #00000080, inset 0 5px 10px #aaffaa;
+    }
+
+    body.bg-sunset .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #ffccbb, #cc4400 70%, #662200);
+      border-color: #ff9988;
+      box-shadow: 0 0 40px #ff4500, inset 0 -5px 10px #00000080, inset 0 5px 10px #ffccbb;
+    }
+
+    body.bg-ocean .coin-gfx { 
+      background: radial-gradient(circle at 30% 25%, #bbddff, #0066cc 70%, #003366);
+      border-color: #88bbff;
+      box-shadow: 0 0 40px #1e90ff, inset 0 -5px 10px #00000080, inset 0 5px 10px #bbddff;
+    }
+
     .coin-gfx.crit {
-      background: radial-gradient(circle at 30% 25%, #ff4444, #cc0000 70%, #660000);
-      box-shadow: 0 0 60px #ff0000, inset 0 -5px 10px #00000080;
-      border-color: #ff6666;
+      background: radial-gradient(circle at 30% 25%, #ff4444, #cc0000 70%, #660000) !important;
+      box-shadow: 0 0 60px #ff0000, inset 0 -5px 10px #00000080 !important;
+      border-color: #ff6666 !important;
     }
 
     .coin-gfx span {
@@ -223,11 +381,18 @@
     /* Карточки апгрейдов */
     .upgrade-card {
       background: #120e18;
-      border: 1px solid #ff8c0060;
+      border: 1px solid;
       border-radius: 30px;
       padding: 18px;
       margin-bottom: 15px;
     }
+
+    body.bg-default .upgrade-card { border-color: #ff8c0060; }
+    body.bg-neon .upgrade-card { border-color: #00ffff60; }
+    body.bg-gold .upgrade-card { border-color: #ffd70060; }
+    body.bg-matrix .upgrade-card { border-color: #00ff0060; }
+    body.bg-sunset .upgrade-card { border-color: #ff450060; }
+    body.bg-ocean .upgrade-card { border-color: #1e90ff60; }
 
     .upgrade-header {
       display: flex;
@@ -238,8 +403,14 @@
     .upgrade-title {
       font-size: 18px;
       font-weight: 700;
-      color: #ffc978;
     }
+
+    body.bg-default .upgrade-title { color: #ffc978; }
+    body.bg-neon .upgrade-title { color: #aaffff; }
+    body.bg-gold .upgrade-title { color: #ffdd88; }
+    body.bg-matrix .upgrade-title { color: #aaffaa; }
+    body.bg-sunset .upgrade-title { color: #ffbb99; }
+    body.bg-ocean .upgrade-title { color: #aaccff; }
 
     .upgrade-cost {
       font-size: 20px;
@@ -247,8 +418,13 @@
       color: #ffaa00;
     }
 
+    body.bg-neon .upgrade-cost { color: #00ffff; }
+    body.bg-gold .upgrade-cost { color: #ffd700; }
+    body.bg-matrix .upgrade-cost { color: #00ff00; }
+    body.bg-sunset .upgrade-cost { color: #ff4500; }
+    body.bg-ocean .upgrade-cost { color: #1e90ff; }
+
     .upgrade-desc {
-      color: #b8a58b;
       margin-bottom: 15px;
       font-size: 14px;
       display: flex;
@@ -256,19 +432,31 @@
       align-items: center;
     }
 
+    body.bg-default .upgrade-desc { color: #b8a58b; }
+    body.bg-neon .upgrade-desc { color: #88bbbb; }
+    body.bg-gold .upgrade-desc { color: #ccbb99; }
+    body.bg-matrix .upgrade-desc { color: #88bb88; }
+    body.bg-sunset .upgrade-desc { color: #bbaa99; }
+    body.bg-ocean .upgrade-desc { color: #99aacc; }
+
     .level-badge {
       background: #2a1f12;
       padding: 4px 12px;
       border-radius: 30px;
-      color: #ffc978;
       font-weight: 600;
     }
+
+    body.bg-default .level-badge { color: #ffc978; }
+    body.bg-neon .level-badge { color: #aaffff; }
+    body.bg-gold .level-badge { color: #ffdd88; }
+    body.bg-matrix .level-badge { color: #aaffaa; }
+    body.bg-sunset .level-badge { color: #ffbb99; }
+    body.bg-ocean .level-badge { color: #aaccff; }
 
     .buy-btn {
       width: 100%;
       background: #2a1f12;
-      border: 1px solid #ff8c00;
-      color: #ffdca8;
+      border: 1px solid;
       font-weight: 700;
       font-size: 16px;
       padding: 14px;
@@ -279,6 +467,13 @@
       letter-spacing: 2px;
     }
 
+    body.bg-default .buy-btn { border-color: #ff8c00; color: #ffdca8; }
+    body.bg-neon .buy-btn { border-color: #00ffff; color: #aaffff; }
+    body.bg-gold .buy-btn { border-color: #ffd700; color: #ffdd88; }
+    body.bg-matrix .buy-btn { border-color: #00ff00; color: #aaffaa; }
+    body.bg-sunset .buy-btn { border-color: #ff4500; color: #ffbb99; }
+    body.bg-ocean .buy-btn { border-color: #1e90ff; color: #aaccff; }
+
     .buy-btn:active {
       transform: translateY(2px);
     }
@@ -288,170 +483,80 @@
       pointer-events: none;
     }
 
-    /* Достижения */
-    .achievement-card {
-      background: #120e18;
-      border: 1px solid #ff8c0060;
-      border-radius: 20px;
-      padding: 15px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .achievement-info {
-      flex: 1;
-    }
-
-    .achievement-name {
-      color: #ffc978;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .achievement-desc {
-      color: #b8a58b;
-      font-size: 12px;
-    }
-
-    .achievement-status {
-      color: #00ff88;
-      font-size: 20px;
-    }
-
-    .achievement-locked {
-      color: #6a5a47;
-    }
-
-    /* Таблица лидеров */
-    .leaderboard-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 15px;
-      background: #120e18;
-      border: 1px solid #ff8c0050;
-      border-radius: 20px;
-      margin-bottom: 8px;
-    }
-
-    .leaderboard-rank {
-      color: #ffaa00;
-      font-weight: 700;
-      width: 30px;
-    }
-
-    .leaderboard-name {
-      color: #ffdca8;
-      flex: 1;
-    }
-
-    .leaderboard-balance {
-      color: #00ff88;
-      font-weight: 700;
-    }
-
-    /* Ежедневный бонус */
-    .daily-bonus-card {
-      background: linear-gradient(135deg, #2a1f12, #1a1425);
-      border: 1px solid #ffaa00;
-      border-radius: 30px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .daily-title {
-      color: #ffc978;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .daily-timer {
-      color: #b89b72;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-
-    .daily-btn {
-      background: linear-gradient(135deg, #ff8c00, #ffaa33);
-      border: none;
-      border-radius: 50px;
-      padding: 12px 30px;
-      color: #0a0a0f;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .daily-btn.disabled {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    /* Рандомный фон */
-    .random-bg-section {
+    /* Рандомный фон и шрифт */
+    .customization-section {
       margin-top: 20px;
       padding-top: 15px;
-      border-top: 1px solid #ff8c0030;
+      border-top: 1px solid;
     }
 
-    .random-bg-title {
+    body.bg-default .customization-section { border-color: #ff8c0030; }
+    body.bg-neon .customization-section { border-color: #00ffff30; }
+    body.bg-gold .customization-section { border-color: #ffd70030; }
+    body.bg-matrix .customization-section { border-color: #00ff0030; }
+    body.bg-sunset .customization-section { border-color: #ff450030; }
+    body.bg-ocean .customization-section { border-color: #1e90ff30; }
+
+    .customization-title {
       font-size: 18px;
-      color: #ffc978;
       margin-bottom: 15px;
       text-align: center;
     }
 
-    .random-bg-btn {
-      width: 100%;
+    body.bg-default .customization-title { color: #ffc978; }
+    body.bg-neon .customization-title { color: #aaffff; }
+    body.bg-gold .customization-title { color: #ffdd88; }
+    body.bg-matrix .customization-title { color: #aaffaa; }
+    body.bg-sunset .customization-title { color: #ffbb99; }
+    body.bg-ocean .customization-title { color: #aaccff; }
+
+    .customization-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .custom-btn {
       background: linear-gradient(135deg, #8a2be2, #4a0080);
       border: 1px solid #ba7bff;
       color: #ffdca8;
       font-weight: 700;
-      font-size: 16px;
-      padding: 14px;
+      font-size: 14px;
+      padding: 12px;
       border-radius: 50px;
       cursor: pointer;
-      margin-bottom: 10px;
+      text-align: center;
     }
 
-    .current-bg-info {
+    .current-info {
       text-align: center;
-      color: #b89b72;
       font-size: 14px;
     }
 
-    .status-message {
+    body.bg-default .current-info { color: #b89b72; }
+    body.bg-neon .current-info { color: #88bbbb; }
+    body.bg-gold .current-info { color: #ccbb99; }
+    body.bg-matrix .current-info { color: #88bb88; }
+    body.bg-sunset .current-info { color: #bbaa99; }
+    body.bg-ocean .current-info { color: #99aacc; }
+
+    /* Копирайт */
+    .copyright {
       text-align: center;
-      margin-top: 15px;
-      color: #eebb77;
-      font-weight: 500;
-      min-height: 24px;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid;
+      font-size: 12px;
+      opacity: 0.7;
     }
 
-    /* Всплывающие цифры */
-    .floating-number {
-      position: fixed;
-      font-weight: 900;
-      color: #ffd28f;
-      text-shadow: 0 0 20px #ff8c00, 0 2px 4px #000;
-      font-size: 32px;
-      pointer-events: none;
-      z-index: 9999;
-      animation: floatUp 0.8s ease-out forwards;
-    }
-
-    .floating-number.crit {
-      color: #ff4444;
-      text-shadow: 0 0 30px #ff0000, 0 2px 4px #000;
-      font-size: 42px;
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-100px); }
-    }
+    body.bg-default .copyright { border-color: #ff8c0030; color: #b89b72; }
+    body.bg-neon .copyright { border-color: #00ffff30; color: #88bbbb; }
+    body.bg-gold .copyright { border-color: #ffd70030; color: #ccbb99; }
+    body.bg-matrix .copyright { border-color: #00ff0030; color: #88bb88; }
+    body.bg-sunset .copyright { border-color: #ff450030; color: #bbaa99; }
+    body.bg-ocean .copyright { border-color: #1e90ff30; color: #99aacc; }
 
     /* Регистрация */
     .register-screen {
@@ -467,17 +572,32 @@
       margin-bottom: 30px;
     }
 
+    .password-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
     .register-input {
       width: 100%;
-      padding: 16px 20px;
+      padding: 16px 50px 16px 20px;
       background: #1a1425;
       border: 2px solid #ff8c00;
       border-radius: 50px;
       color: #ffdca8;
       font-size: 18px;
       outline: none;
-      margin-bottom: 15px;
       text-align: center;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 20px;
+      color: #b89b72;
+      user-select: none;
     }
 
     .register-btn {
@@ -493,20 +613,52 @@
       margin-top: 10px;
     }
 
+    /* Адаптив */
     @media (max-width: 400px) {
       .coin-gfx { width: 150px; height: 150px; }
       .coin-gfx span { font-size: 42px; }
       .balance-value { font-size: 44px; }
     }
+
+    /* Всплывашки */
+    .floating-number {
+      position: fixed;
+      font-weight: 900;
+      font-size: 32px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: floatUp 0.8s ease-out forwards;
+    }
+
+    body.bg-default .floating-number { color: #ffd28f; text-shadow: 0 0 20px #ff8c00, 0 2px 4px #000; }
+    body.bg-neon .floating-number { color: #aaffff; text-shadow: 0 0 20px #00ffff, 0 2px 4px #000; }
+    body.bg-gold .floating-number { color: #ffeeaa; text-shadow: 0 0 20px #ffd700, 0 2px 4px #000; }
+    body.bg-matrix .floating-number { color: #aaffaa; text-shadow: 0 0 20px #00ff00, 0 2px 4px #000; }
+    body.bg-sunset .floating-number { color: #ffccbb; text-shadow: 0 0 20px #ff4500, 0 2px 4px #000; }
+    body.bg-ocean .floating-number { color: #bbddff; text-shadow: 0 0 20px #1e90ff, 0 2px 4px #000; }
+
+    .floating-number.crit {
+      color: #ff4444 !important;
+      text-shadow: 0 0 30px #ff0000, 0 2px 4px #000 !important;
+      font-size: 42px;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-100px); }
+    }
   </style>
 </head>
-<body class="bg-default">
+<body class="bg-default font-inter">
 <div class="game-container">
   <!-- Экран регистрации -->
   <div id="registerScreen" class="register-screen">
     <div class="register-title">🚀 EnFT Tap</div>
     <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20">
-    <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30">
+    <div class="password-wrapper">
+      <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30">
+      <span class="toggle-password" id="togglePassword">👁️</span>
+    </div>
     <button id="registerBtn" class="register-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
   </div>
 
@@ -557,497 +709,3 @@
       <div class="tap-area">
         <button class="coin-button" id="tapButton">
           <div class="coin-gfx" id="coinGfx">
-            <span>EnFT</span>
-          </div>
-        </button>
-      </div>
-
-      <!-- Улучшения -->
-      <div class="upgrade-card">
-        <div class="upgrade-header">
-          <span class="upgrade-title">💪 УЛУЧШИТЬ УДАР</span>
-          <span class="upgrade-cost" id="punchCostDisplay">50</span>
-        </div>
-        <div class="upgrade-desc">
-          <span>+0.5 EnFT за клик</span>
-          <span class="level-badge" id="punchLevelDisplay">УР. 0</span>
-        </div>
-        <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
-      </div>
-
-      <div class="upgrade-card">
-        <div class="upgrade-header">
-          <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ ШАНС</span>
-          <span class="upgrade-cost" id="critCostDisplay">100</span>
-        </div>
-        <div class="upgrade-desc">
-          <span>+2% шанс крита (макс 50%)</span>
-          <span class="level-badge" id="critLevelDisplay">УР. 0</span>
-        </div>
-        <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
-      </div>
-
-      <!-- Рандомный фон -->
-      <div class="random-bg-section">
-        <div class="random-bg-title">🎲 РАНДОМНЫЙ ФОН</div>
-        <button class="random-bg-btn" id="randomBgBtn">50 EnFT · СМЕНИТЬ ФОН</button>
-        <div class="current-bg-info" id="currentBgName">Текущий: Стандарт</div>
-      </div>
-
-      <div id="messageArea" class="status-message"></div>
-    </div>
-
-    <!-- Вкладка Достижения -->
-    <div id="achievementsScreen" class="screen">
-      <div id="achievementsList"></div>
-    </div>
-
-    <!-- Вкладка Таблица лидеров -->
-    <div id="leaderboardScreen" class="screen">
-      <div id="leaderboardList"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-  (function(){
-    "use strict";
-
-    // ---------- ЗВУКИ ----------
-    const sounds = {
-      tap: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
-      crit: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
-      buy: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38=')
-    };
-    
-    let soundsEnabled = false;
-    
-    function enableSounds() {
-      soundsEnabled = true;
-    }
-    
-    function playSound(soundName) {
-      if (!soundsEnabled) return;
-      const sound = sounds[soundName];
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-      }
-    }
-
-    // ---------- СОСТОЯНИЕ ----------
-    let currentUser = null;
-    
-    const PUNCH_BASE_COST = 50;
-    const PUNCH_COST_MULTIPLIER = 1.4;
-    const PUNCH_BONUS = 0.5;
-    
-    const CRIT_BASE_COST = 100;
-    const CRIT_COST_MULTIPLIER = 1.5;
-    const CRIT_BONUS = 2;
-    const MAX_CRIT = 50;
-    
-    const RANDOM_BG_COST = 50;
-    
-    const BACKGROUNDS = [
-      { name: 'Стандарт', class: 'bg-default' },
-      { name: 'Неон', class: 'bg-neon' },
-      { name: 'Золото', class: 'bg-gold' },
-      { name: 'Матрица', class: 'bg-matrix' },
-      { name: 'Закат', class: 'bg-sunset' },
-      { name: 'Океан', class: 'bg-ocean' }
-    ];
-
-    // Достижения
-    const ACHIEVEMENTS = [
-      { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10, check: (u) => u.totalTaps >= 100 },
-      { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50, check: (u) => u.totalTaps >= 1000 },
-      { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30, check: (u) => u.totalCrits >= 10 },
-      { id: 'bg_5', name: 'Дизайнер', desc: '5 фонов', reward: 100, check: (u) => u.bgPurchases >= 5 },
-      { id: 'balance_500', name: 'Богач', desc: '500 EnFT', reward: 0, check: (u) => u.balance >= 500 }
-    ];
-
-    // UI элементы
-    const registerScreen = document.getElementById('registerScreen');
-    const mainScreen = document.getElementById('mainScreen');
-    const usernameInput = document.getElementById('usernameInput');
-    const passwordInput = document.getElementById('passwordInput');
-    const registerBtn = document.getElementById('registerBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const profileName = document.getElementById('profileName');
-    const balanceSpan = document.getElementById('balanceDisplay');
-    const tapPowerSpan = document.getElementById('tapPowerDisplay');
-    const critChanceDisplay = document.getElementById('critChanceDisplay');
-    const punchCostSpan = document.getElementById('punchCostDisplay');
-    const critCostSpan = document.getElementById('critCostDisplay');
-    const punchLevelSpan = document.getElementById('punchLevelDisplay');
-    const critLevelSpan = document.getElementById('critLevelDisplay');
-    const currentBgName = document.getElementById('currentBgName');
-    const messageDiv = document.getElementById('messageArea');
-    const coinGfx = document.getElementById('coinGfx');
-    
-    const tapButton = document.getElementById('tapButton');
-    const buyPunchBtn = document.getElementById('buyPunchBtn');
-    const buyCritBtn = document.getElementById('buyCritBtn');
-    const randomBgBtn = document.getElementById('randomBgBtn');
-    const dailyBonusBtn = document.getElementById('dailyBonusBtn');
-    const dailyTimer = document.getElementById('dailyTimer');
-
-    // Вкладки
-    const tabs = document.querySelectorAll('.tab');
-    const screens = {
-      game: document.getElementById('gameScreen'),
-      achievements: document.getElementById('achievementsScreen'),
-      leaderboard: document.getElementById('leaderboardScreen')
-    };
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const tabName = tab.dataset.tab;
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        Object.values(screens).forEach(s => s.classList.remove('active'));
-        screens[tabName].classList.add('active');
-        if (tabName === 'achievements') updateAchievementsList();
-        if (tabName === 'leaderboard') updateLeaderboard();
-      });
-    });
-
-    // Функции
-    function getTapPower() {
-      if (!currentUser) return 1.0;
-      return 1.0 + (currentUser.punchLevel * PUNCH_BONUS);
-    }
-
-    function getCritChance() {
-      if (!currentUser) return 0;
-      return Math.min(currentUser.critLevel * CRIT_BONUS, MAX_CRIT);
-    }
-
-    function getPunchCost() {
-      return Math.floor(PUNCH_BASE_COST * Math.pow(PUNCH_COST_MULTIPLIER, currentUser.punchLevel));
-    }
-
-    function getCritCost() {
-      return Math.floor(CRIT_BASE_COST * Math.pow(CRIT_COST_MULTIPLIER, currentUser.critLevel));
-    }
-
-    function showFloatingNumber(x, y, amount, isCrit = false) {
-      const floatEl = document.createElement('div');
-      floatEl.className = isCrit ? 'floating-number crit' : 'floating-number';
-      floatEl.textContent = `+${amount.toFixed(1)}${isCrit ? ' 💥' : ''}`;
-      floatEl.style.left = (x - 20) + 'px';
-      floatEl.style.top = (y - 30) + 'px';
-      document.body.appendChild(floatEl);
-      setTimeout(() => floatEl.remove(), 800);
-    }
-
-    function applyBackground(bgClass) {
-      document.body.className = bgClass;
-      const bg = BACKGROUNDS.find(b => b.class === bgClass);
-      if (bg) currentBgName.textContent = `Текущий: ${bg.name}`;
-    }
-
-    function saveAllUsers(users) {
-      localStorage.setItem('enft_users_v3', JSON.stringify(users));
-    }
-
-    function loadAllUsers() {
-      return JSON.parse(localStorage.getItem('enft_users_v3') || '{}');
-    }
-
-    function saveCurrentUser() {
-      if (!currentUser) return;
-      const users = loadAllUsers();
-      users[currentUser.name] = currentUser;
-      saveAllUsers(users);
-    }
-
-    function refreshUI() {
-      if (!currentUser) return;
-      
-      const power = getTapPower();
-      const critChance = getCritChance();
-      
-      balanceSpan.textContent = currentUser.balance.toFixed(1);
-      tapPowerSpan.textContent = power.toFixed(1);
-      critChanceDisplay.textContent = critChance + '%';
-      
-      const punchCost = getPunchCost();
-      punchCostSpan.textContent = punchCost;
-      punchLevelSpan.textContent = `УР. ${currentUser.punchLevel}`;
-      buyPunchBtn.classList.toggle('disabled', currentUser.balance < punchCost);
-      
-      const critCost = getCritCost();
-      critCostSpan.textContent = critCost;
-      critLevelSpan.textContent = `УР. ${currentUser.critLevel}`;
-      buyCritBtn.classList.toggle('disabled', currentUser.balance < critCost || critChance >= MAX_CRIT);
-      
-      randomBgBtn.classList.toggle('disabled', currentUser.balance < RANDOM_BG_COST);
-      
-      profileName.textContent = currentUser.name;
-      profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-      
-      applyBackground(currentUser.currentBg || 'bg-default');
-      
-      // Ежедневный бонус
-      updateDailyBonus();
-    }
-
-    function updateDailyBonus() {
-      if (!currentUser) return;
-      
-      const now = Date.now();
-      const lastClaim = currentUser.lastDailyClaim || 0;
-      const cooldown = 24 * 60 * 60 * 1000;
-      const timeLeft = lastClaim + cooldown - now;
-      
-      if (timeLeft <= 0) {
-        dailyTimer.textContent = '+50 EnFT доступно!';
-        dailyBonusBtn.classList.remove('disabled');
-      } else {
-        const hours = Math.floor(timeLeft / (60 * 60 * 1000));
-        const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-        dailyTimer.textContent = `Доступно через ${hours}ч ${minutes}м`;
-        dailyBonusBtn.classList.add('disabled');
-      }
-    }
-
-    function claimDailyBonus() {
-      if (!currentUser) return;
-      
-      const now = Date.now();
-      const lastClaim = currentUser.lastDailyClaim || 0;
-      const cooldown = 24 * 60 * 60 * 1000;
-      
-      if (now - lastClaim < cooldown) return;
-      
-      currentUser.balance += 50;
-      currentUser.lastDailyClaim = now;
-      
-      messageDiv.textContent = '🎁 Получено 50 EnFT!';
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    }
-
-    function updateAchievementsList() {
-      if (!currentUser) return;
-      
-      const list = document.getElementById('achievementsList');
-      list.innerHTML = '';
-      
-      ACHIEVEMENTS.forEach(ach => {
-        const completed = currentUser.achievements?.includes(ach.id) || ach.check(currentUser);
-        const card = document.createElement('div');
-        card.className = 'achievement-card';
-        card.innerHTML = `
-          <div class="achievement-info">
-            <div class="achievement-name">${ach.name}</div>
-            <div class="achievement-desc">${ach.desc} · +${ach.reward} EnFT</div>
-          </div>
-          <div class="achievement-status ${completed ? '' : 'achievement-locked'}">
-            ${completed ? '✓' : '🔒'}
-          </div>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-    function checkAchievements() {
-      if (!currentUser) return;
-      
-      if (!currentUser.achievements) currentUser.achievements = [];
-      
-      ACHIEVEMENTS.forEach(ach => {
-        if (!currentUser.achievements.includes(ach.id) && ach.check(currentUser)) {
-          currentUser.achievements.push(ach.id);
-          currentUser.balance += ach.reward;
-          messageDiv.textContent = `🏆 Достижение: ${ach.name}! +${ach.reward} EnFT`;
-          playSound('buy');
-        }
-      });
-      
-      saveCurrentUser();
-    }
-
-    function updateLeaderboard() {
-      const users = loadAllUsers();
-      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance).slice(0, 5);
-      
-      const list = document.getElementById('leaderboardList');
-      list.innerHTML = '';
-      
-      sorted.forEach((user, i) => {
-        const item = document.createElement('div');
-        item.className = 'leaderboard-item';
-        item.innerHTML = `
-          <span class="leaderboard-rank">#${i + 1}</span>
-          <span class="leaderboard-name">${user.name}</span>
-          <span class="leaderboard-balance">${user.balance.toFixed(1)} ⚡</span>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function register() {
-      const name = usernameInput.value.trim();
-      const password = passwordInput.value;
-      
-      if (!name || !password) {
-        alert('Введи ник и пароль!');
-        return;
-      }
-      
-      const users = loadAllUsers();
-      
-      if (users[name]) {
-        if (users[name].password !== password) {
-          alert('Неверный пароль!');
-          return;
-        }
-        currentUser = users[name];
-      } else {
-        currentUser = {
-          name,
-          password,
-          balance: 0.0,
-          punchLevel: 0,
-          critLevel: 0,
-          currentBg: 'bg-default',
-          totalTaps: 0,
-          totalCrits: 0,
-          bgPurchases: 0,
-          achievements: [],
-          lastDailyClaim: 0
-        };
-        users[name] = currentUser;
-        saveAllUsers(users);
-      }
-      
-      // Инициализация
-      if (!currentUser.totalTaps) currentUser.totalTaps = 0;
-      if (!currentUser.totalCrits) currentUser.totalCrits = 0;
-      if (!currentUser.bgPurchases) currentUser.bgPurchases = 0;
-      if (!currentUser.achievements) currentUser.achievements = [];
-      
-      registerScreen.style.display = 'none';
-      mainScreen.style.display = 'block';
-      refreshUI();
-      checkAchievements();
-      enableSounds();
-      playSound('buy');
-    }
-
-    function logout() {
-      saveCurrentUser();
-      currentUser = null;
-      registerScreen.style.display = 'block';
-      mainScreen.style.display = 'none';
-      usernameInput.value = '';
-      passwordInput.value = '';
-      document.body.className = 'bg-default';
-    }
-
-    function buyPunch() {
-      if (!currentUser) return;
-      const cost = getPunchCost();
-      if (currentUser.balance < cost) return;
-      
-      currentUser.balance -= cost;
-      currentUser.punchLevel++;
-      
-      playSound('buy');
-      messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punchLevel}!`;
-      refreshUI();
-      checkAchievements();
-      saveCurrentUser();
-    }
-
-    function buyCrit() {
-      if (!currentUser) return;
-      if (getCritChance() >= MAX_CRIT) return;
-      
-      const cost = getCritCost();
-      if (currentUser.balance < cost) return;
-      
-      currentUser.balance -= cost;
-      currentUser.critLevel++;
-      
-      playSound('buy');
-      messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`;
-      refreshUI();
-      checkAchievements();
-      saveCurrentUser();
-    }
-
-    function buyRandomBg() {
-      if (!currentUser) return;
-      if (currentUser.balance < RANDOM_BG_COST) return;
-      
-      currentUser.balance -= RANDOM_BG_COST;
-      currentUser.bgPurchases = (currentUser.bgPurchases || 0) + 1;
-      
-      const available = BACKGROUNDS.filter(bg => bg.class !== currentUser.currentBg);
-      const randomBg = available[Math.floor(Math.random() * available.length)];
-      currentUser.currentBg = randomBg.class;
-      
-      playSound('buy');
-      messageDiv.textContent = `🎲 Новый фон: ${randomBg.name}!`;
-      refreshUI();
-      checkAchievements();
-      saveCurrentUser();
-    }
-
-    function handleTap(event) {
-      if (!currentUser) return;
-      
-      currentUser.totalTaps = (currentUser.totalTaps || 0) + 1;
-      
-      let earned = getTapPower();
-      const isCrit = Math.random() * 100 < getCritChance();
-      
-      if (isCrit) {
-        earned *= 2;
-        currentUser.totalCrits = (currentUser.totalCrits || 0) + 1;
-        coinGfx.classList.add('crit');
-        setTimeout(() => coinGfx.classList.remove('crit'), 100);
-        playSound('crit');
-      } else {
-        playSound('tap');
-      }
-      
-      currentUser.balance += earned;
-      
-      const x = event.clientX || window.innerWidth / 2;
-      const y = event.clientY || window.innerHeight / 2;
-      showFloatingNumber(x, y, earned, isCrit);
-      
-      refreshUI();
-      checkAchievements();
-      saveCurrentUser();
-      
-      messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`;
-    }
-
-    // Инициализация
-    registerBtn.addEventListener('click', register);
-    logoutBtn.addEventListener('click', logout);
-    tapButton.addEventListener('click', handleTap);
-    buyPunchBtn.addEventListener('click', buyPunch);
-    buyCritBtn.addEventListener('click', buyCrit);
-    randomBgBtn.addEventListener('click', buyRandomBg);
-    dailyBonusBtn.addEventListener('click', claimDailyBonus);
-    
-    usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
-    passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
-    
-    // Таймер ежедневного бонуса
-    setInterval(() => {
-      if (currentUser) updateDailyBonus();
-    }, 1000);
-  })();
-</script>
-</body>
-</html>
