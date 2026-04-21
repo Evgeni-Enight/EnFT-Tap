@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>EnFT Tap · Мемкоин с профилем</title>
+  <title>EnFT Tap · Хардкорный мемкоин</title>
   <style>
     * {
       margin: 0;
@@ -25,32 +25,15 @@
     }
 
     /* Фоны */
-    body.bg-default {
-      background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%);
-    }
-
-    body.bg-neon {
-      background-image: linear-gradient(135deg, #0a0a2e 0%, #1a0a2e 50%, #0a1a2e 100%);
-    }
-
-    body.bg-gold {
-      background-image: radial-gradient(circle at 70% 30%, #3a2a0a 0%, #0a0a05 100%);
-    }
-
-    body.bg-matrix {
-      background-image: linear-gradient(0deg, #0a1a0a 0%, #020302 100%);
-    }
-
-    body.bg-sunset {
-      background-image: linear-gradient(45deg, #2e0a0a 0%, #2e1a0a 50%, #1a0a2e 100%);
-    }
-
-    body.bg-ocean {
-      background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%);
-    }
+    body.bg-default { background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%); }
+    body.bg-neon { background-image: linear-gradient(135deg, #0a0a2e 0%, #1a0a2e 50%, #0a1a2e 100%); }
+    body.bg-gold { background-image: radial-gradient(circle at 70% 30%, #3a2a0a 0%, #0a0a05 100%); }
+    body.bg-matrix { background-image: linear-gradient(0deg, #0a1a0a 0%, #020302 100%); }
+    body.bg-sunset { background-image: linear-gradient(45deg, #2e0a0a 0%, #2e1a0a 50%, #1a0a2e 100%); }
+    body.bg-ocean { background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%); }
 
     .game-container {
-      max-width: 480px;
+      max-width: 500px;
       width: 100%;
       background: rgba(8, 6, 12, 0.85);
       backdrop-filter: blur(12px);
@@ -60,76 +43,42 @@
       box-shadow: 0 20px 40px #000, 0 0 20px #ff8c0040;
     }
 
-    /* Экран регистрации */
-    .register-screen {
-      text-align: center;
-      padding: 20px 10px;
+    /* Вкладки */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .register-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: #ffd28f;
-      text-shadow: 0 0 20px #ff8c00;
-      margin-bottom: 30px;
-    }
-
-    .register-input {
-      width: 100%;
-      padding: 16px 20px;
+    .tab {
+      flex: 1;
+      padding: 10px;
       background: #1a1425;
-      border: 2px solid #ff8c00;
-      border-radius: 50px;
-      color: #ffdca8;
-      font-size: 18px;
-      outline: none;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    .register-input::placeholder {
-      color: #8a7a5f;
-    }
-
-    .register-input[type="password"] {
-      -webkit-text-security: disc;
-    }
-
-    .register-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #ff8c00, #ffaa33);
-      border: none;
-      border-radius: 50px;
-      color: #0a0a0f;
-      font-weight: 800;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 0 30px #ff8c0080;
-      transition: 0.2s;
-      margin-top: 10px;
-    }
-
-    .register-btn:active {
-      transform: scale(0.95);
-    }
-
-    .auth-toggle {
+      border: 1px solid #ff8c0050;
+      border-radius: 30px;
       color: #b89b72;
-      margin-top: 15px;
-      cursor: pointer;
       font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
     }
 
-    .auth-toggle:hover {
-      color: #ffc978;
+    .tab.active {
+      background: #ff8c00;
+      color: #0a0a0f;
+      font-weight: 700;
     }
 
-    /* Основной экран */
-    .main-screen {
+    /* Экраны */
+    .screen {
       display: none;
     }
 
+    .screen.active {
+      display: block;
+    }
+
+    /* Профиль */
     .profile-section {
       display: flex;
       align-items: center;
@@ -174,13 +123,9 @@
       border-radius: 30px;
       font-size: 12px;
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    .logout-btn:active {
-      background: #ff8c0030;
-    }
-
+    /* Баланс */
     .balance-section {
       text-align: center;
       margin-bottom: 15px;
@@ -202,6 +147,7 @@
       line-height: 1.2;
     }
 
+    /* Статы */
     .stats-row {
       display: flex;
       justify-content: space-around;
@@ -228,6 +174,7 @@
       color: #ffd7a0;
     }
 
+    /* Кнопка тапа */
     .tap-area {
       display: flex;
       justify-content: center;
@@ -257,6 +204,13 @@
       justify-content: center;
       box-shadow: 0 0 40px #ff8c00, inset 0 -5px 10px #00000080, inset 0 5px 10px #fff3cf;
       border: 3px solid #ffc864;
+      transition: all 0.1s;
+    }
+
+    .coin-gfx.crit {
+      background: radial-gradient(circle at 30% 25%, #ff4444, #cc0000 70%, #660000);
+      box-shadow: 0 0 60px #ff0000, inset 0 -5px 10px #00000080;
+      border-color: #ff6666;
     }
 
     .coin-gfx span {
@@ -266,6 +220,7 @@
       text-shadow: 2px 3px 0 #ffd58c;
     }
 
+    /* Карточки апгрейдов */
     .upgrade-card {
       background: #120e18;
       border: 1px solid #ff8c0060;
@@ -333,6 +288,107 @@
       pointer-events: none;
     }
 
+    /* Достижения */
+    .achievement-card {
+      background: #120e18;
+      border: 1px solid #ff8c0060;
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-name {
+      color: #ffc978;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .achievement-desc {
+      color: #b8a58b;
+      font-size: 12px;
+    }
+
+    .achievement-status {
+      color: #00ff88;
+      font-size: 20px;
+    }
+
+    .achievement-locked {
+      color: #6a5a47;
+    }
+
+    /* Таблица лидеров */
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: #120e18;
+      border: 1px solid #ff8c0050;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .leaderboard-rank {
+      color: #ffaa00;
+      font-weight: 700;
+      width: 30px;
+    }
+
+    .leaderboard-name {
+      color: #ffdca8;
+      flex: 1;
+    }
+
+    .leaderboard-balance {
+      color: #00ff88;
+      font-weight: 700;
+    }
+
+    /* Ежедневный бонус */
+    .daily-bonus-card {
+      background: linear-gradient(135deg, #2a1f12, #1a1425);
+      border: 1px solid #ffaa00;
+      border-radius: 30px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .daily-title {
+      color: #ffc978;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .daily-timer {
+      color: #b89b72;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .daily-btn {
+      background: linear-gradient(135deg, #ff8c00, #ffaa33);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 30px;
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .daily-btn.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
     /* Рандомный фон */
     .random-bg-section {
       margin-top: 20px;
@@ -357,14 +413,7 @@
       padding: 14px;
       border-radius: 50px;
       cursor: pointer;
-      transition: 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 2px;
       margin-bottom: 10px;
-    }
-
-    .random-bg-btn:active {
-      transform: translateY(2px);
     }
 
     .current-bg-info {
@@ -381,6 +430,7 @@
       min-height: 24px;
     }
 
+    /* Всплывающие цифры */
     .floating-number {
       position: fixed;
       font-weight: 900;
@@ -403,6 +453,46 @@
       100% { opacity: 0; transform: translateY(-100px); }
     }
 
+    /* Регистрация */
+    .register-screen {
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .register-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffd28f;
+      text-shadow: 0 0 20px #ff8c00;
+      margin-bottom: 30px;
+    }
+
+    .register-input {
+      width: 100%;
+      padding: 16px 20px;
+      background: #1a1425;
+      border: 2px solid #ff8c00;
+      border-radius: 50px;
+      color: #ffdca8;
+      font-size: 18px;
+      outline: none;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #ff8c00, #ffaa33);
+      border: none;
+      border-radius: 50px;
+      color: #0a0a0f;
+      font-weight: 800;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     @media (max-width: 400px) {
       .coin-gfx { width: 150px; height: 150px; }
       .coin-gfx span { font-size: 42px; }
@@ -412,18 +502,16 @@
 </head>
 <body class="bg-default">
 <div class="game-container">
-  <!-- Экран регистрации/входа -->
+  <!-- Экран регистрации -->
   <div id="registerScreen" class="register-screen">
     <div class="register-title">🚀 EnFT Tap</div>
-    <div style="margin-bottom: 30px; color: #b89b72;" id="authTitle">Регистрация</div>
-    <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20" autocomplete="off">
-    <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30" autocomplete="off">
-    <button id="registerBtn" class="register-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
-    <div class="auth-toggle" id="toggleAuth">Уже есть аккаунт? Войти</div>
+    <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20">
+    <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30">
+    <button id="registerBtn" class="register-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
   </div>
 
-  <!-- Основной экран игры -->
-  <div id="mainScreen" class="main-screen">
+  <!-- Основной экран -->
+  <div id="mainScreen" style="display: none;">
     <div class="profile-section">
       <div class="profile-info">
         <div class="profile-avatar" id="profileAvatar">E</div>
@@ -432,66 +520,92 @@
       <button class="logout-btn" id="logoutBtn">Выйти</button>
     </div>
 
-    <div class="balance-section">
-      <div class="balance-label">БАЛАНС EnFT</div>
-      <div class="balance-value">
-        <span id="balanceDisplay">0.0</span> ⚡
-      </div>
+    <!-- Вкладки -->
+    <div class="tabs">
+      <div class="tab active" data-tab="game">Игра</div>
+      <div class="tab" data-tab="achievements">Достижения</div>
+      <div class="tab" data-tab="leaderboard">Топ</div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-item">
-        <div class="stat-label">СИЛА ТАПА</div>
-        <div class="stat-value" id="tapPowerDisplay">1.0</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">КРИТ ШАНС</div>
-        <div class="stat-value" id="critChanceDisplay">0%</div>
-      </div>
-    </div>
-
-    <div class="tap-area">
-      <button class="coin-button" id="tapButton">
-        <div class="coin-gfx">
-          <span>EnFT</span>
+    <!-- Вкладка Игра -->
+    <div id="gameScreen" class="screen active">
+      <div class="balance-section">
+        <div class="balance-label">БАЛАНС EnFT</div>
+        <div class="balance-value">
+          <span id="balanceDisplay">0.0</span> ⚡
         </div>
-      </button>
+      </div>
+
+      <!-- Ежедневный бонус -->
+      <div class="daily-bonus-card" id="dailyBonusCard">
+        <div class="daily-title">🎁 ЕЖЕДНЕВНЫЙ БОНУС</div>
+        <div class="daily-timer" id="dailyTimer">+50 EnFT доступно!</div>
+        <button class="daily-btn" id="dailyBonusBtn">ЗАБРАТЬ</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-label">СИЛА ТАПА</div>
+          <div class="stat-value" id="tapPowerDisplay">1.0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">КРИТ ШАНС</div>
+          <div class="stat-value" id="critChanceDisplay">0%</div>
+        </div>
+      </div>
+
+      <div class="tap-area">
+        <button class="coin-button" id="tapButton">
+          <div class="coin-gfx" id="coinGfx">
+            <span>EnFT</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Улучшения -->
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">💪 УЛУЧШИТЬ УДАР</span>
+          <span class="upgrade-cost" id="punchCostDisplay">50</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+0.5 EnFT за клик</span>
+          <span class="level-badge" id="punchLevelDisplay">УР. 0</span>
+        </div>
+        <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
+      </div>
+
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ ШАНС</span>
+          <span class="upgrade-cost" id="critCostDisplay">100</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+2% шанс крита (макс 50%)</span>
+          <span class="level-badge" id="critLevelDisplay">УР. 0</span>
+        </div>
+        <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
+      </div>
+
+      <!-- Рандомный фон -->
+      <div class="random-bg-section">
+        <div class="random-bg-title">🎲 РАНДОМНЫЙ ФОН</div>
+        <button class="random-bg-btn" id="randomBgBtn">50 EnFT · СМЕНИТЬ ФОН</button>
+        <div class="current-bg-info" id="currentBgName">Текущий: Стандарт</div>
+      </div>
+
+      <div id="messageArea" class="status-message"></div>
     </div>
 
-    <!-- Улучшить удар (бесконечное) -->
-    <div class="upgrade-card">
-      <div class="upgrade-header">
-        <span class="upgrade-title">💪 УЛУЧШИТЬ УДАР</span>
-        <span class="upgrade-cost" id="punchCostDisplay">50</span>
-      </div>
-      <div class="upgrade-desc">
-        <span>+0.5 EnFT за клик</span>
-        <span class="level-badge" id="punchLevelDisplay">УР. 0</span>
-      </div>
-      <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
+    <!-- Вкладка Достижения -->
+    <div id="achievementsScreen" class="screen">
+      <div id="achievementsList"></div>
     </div>
 
-    <!-- Критический удар (бесконечное) -->
-    <div class="upgrade-card">
-      <div class="upgrade-header">
-        <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ УДАР</span>
-        <span class="upgrade-cost" id="critCostDisplay">100</span>
-      </div>
-      <div class="upgrade-desc">
-        <span>+5% шанс x2 урона</span>
-        <span class="level-badge" id="critLevelDisplay">УР. 0</span>
-      </div>
-      <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
+    <!-- Вкладка Таблица лидеров -->
+    <div id="leaderboardScreen" class="screen">
+      <div id="leaderboardList"></div>
     </div>
-
-    <!-- Рандомный фон -->
-    <div class="random-bg-section">
-      <div class="random-bg-title">🎲 РАНДОМНЫЙ ФОН</div>
-      <button class="random-bg-btn" id="randomBgBtn">50 EnFT · СМЕНИТЬ ФОН</button>
-      <div class="current-bg-info" id="currentBgName">Текущий: Стандарт</div>
-    </div>
-
-    <div id="messageArea" class="status-message"></div>
   </div>
 </div>
 
@@ -499,22 +613,42 @@
   (function(){
     "use strict";
 
-    // ---------- СОСТОЯНИЕ ИГРЫ ----------
-    let currentUser = null;
-    let isLoginMode = false; // false = регистрация, true = вход
+    // ---------- ЗВУКИ ----------
+    const sounds = {
+      tap: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
+      crit: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
+      buy: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38=')
+    };
     
-    // Конфигурация улучшений
+    let soundsEnabled = false;
+    
+    function enableSounds() {
+      soundsEnabled = true;
+    }
+    
+    function playSound(soundName) {
+      if (!soundsEnabled) return;
+      const sound = sounds[soundName];
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+      }
+    }
+
+    // ---------- СОСТОЯНИЕ ----------
+    let currentUser = null;
+    
     const PUNCH_BASE_COST = 50;
     const PUNCH_COST_MULTIPLIER = 1.4;
     const PUNCH_BONUS = 0.5;
     
     const CRIT_BASE_COST = 100;
-    const CRIT_COST_MULTIPLIER = 1.6;
-    const CRIT_BONUS = 5; // +5% шанса за уровень
+    const CRIT_COST_MULTIPLIER = 1.5;
+    const CRIT_BONUS = 2;
+    const MAX_CRIT = 50;
     
     const RANDOM_BG_COST = 50;
     
-    // Доступные фоны
     const BACKGROUNDS = [
       { name: 'Стандарт', class: 'bg-default' },
       { name: 'Неон', class: 'bg-neon' },
@@ -524,14 +658,21 @@
       { name: 'Океан', class: 'bg-ocean' }
     ];
 
+    // Достижения
+    const ACHIEVEMENTS = [
+      { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10, check: (u) => u.totalTaps >= 100 },
+      { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50, check: (u) => u.totalTaps >= 1000 },
+      { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30, check: (u) => u.totalCrits >= 10 },
+      { id: 'bg_5', name: 'Дизайнер', desc: '5 фонов', reward: 100, check: (u) => u.bgPurchases >= 5 },
+      { id: 'balance_500', name: 'Богач', desc: '500 EnFT', reward: 0, check: (u) => u.balance >= 500 }
+    ];
+
     // UI элементы
     const registerScreen = document.getElementById('registerScreen');
     const mainScreen = document.getElementById('mainScreen');
     const usernameInput = document.getElementById('usernameInput');
     const passwordInput = document.getElementById('passwordInput');
     const registerBtn = document.getElementById('registerBtn');
-    const toggleAuth = document.getElementById('toggleAuth');
-    const authTitle = document.getElementById('authTitle');
     const logoutBtn = document.getElementById('logoutBtn');
     const profileAvatar = document.getElementById('profileAvatar');
     const profileName = document.getElementById('profileName');
@@ -544,36 +685,54 @@
     const critLevelSpan = document.getElementById('critLevelDisplay');
     const currentBgName = document.getElementById('currentBgName');
     const messageDiv = document.getElementById('messageArea');
+    const coinGfx = document.getElementById('coinGfx');
     
     const tapButton = document.getElementById('tapButton');
     const buyPunchBtn = document.getElementById('buyPunchBtn');
     const buyCritBtn = document.getElementById('buyCritBtn');
     const randomBgBtn = document.getElementById('randomBgBtn');
+    const dailyBonusBtn = document.getElementById('dailyBonusBtn');
+    const dailyTimer = document.getElementById('dailyTimer');
 
-    // Вычисление силы тапа
-    function getCurrentTapPower() {
+    // Вкладки
+    const tabs = document.querySelectorAll('.tab');
+    const screens = {
+      game: document.getElementById('gameScreen'),
+      achievements: document.getElementById('achievementsScreen'),
+      leaderboard: document.getElementById('leaderboardScreen')
+    };
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        Object.values(screens).forEach(s => s.classList.remove('active'));
+        screens[tabName].classList.add('active');
+        if (tabName === 'achievements') updateAchievementsList();
+        if (tabName === 'leaderboard') updateLeaderboard();
+      });
+    });
+
+    // Функции
+    function getTapPower() {
       if (!currentUser) return 1.0;
       return 1.0 + (currentUser.punchLevel * PUNCH_BONUS);
     }
 
-    // Вычисление шанса крита
     function getCritChance() {
       if (!currentUser) return 0;
-      return Math.min(currentUser.critLevel * CRIT_BONUS, 100);
+      return Math.min(currentUser.critLevel * CRIT_BONUS, MAX_CRIT);
     }
 
-    // Вычисление стоимости улучшения
     function getPunchCost() {
-      if (!currentUser) return PUNCH_BASE_COST;
       return Math.floor(PUNCH_BASE_COST * Math.pow(PUNCH_COST_MULTIPLIER, currentUser.punchLevel));
     }
 
     function getCritCost() {
-      if (!currentUser) return CRIT_BASE_COST;
       return Math.floor(CRIT_BASE_COST * Math.pow(CRIT_COST_MULTIPLIER, currentUser.critLevel));
     }
 
-    // Всплывающие цифры
     function showFloatingNumber(x, y, amount, isCrit = false) {
       const floatEl = document.createElement('div');
       floatEl.className = isCrit ? 'floating-number crit' : 'floating-number';
@@ -584,143 +743,203 @@
       setTimeout(() => floatEl.remove(), 800);
     }
 
-    // Применение фона
     function applyBackground(bgClass) {
       document.body.className = bgClass;
       const bg = BACKGROUNDS.find(b => b.class === bgClass);
-      if (bg) {
-        currentBgName.textContent = `Текущий: ${bg.name}`;
-      }
+      if (bg) currentBgName.textContent = `Текущий: ${bg.name}`;
     }
 
-    // Обновление интерфейса
+    function saveAllUsers(users) {
+      localStorage.setItem('enft_users_v3', JSON.stringify(users));
+    }
+
+    function loadAllUsers() {
+      return JSON.parse(localStorage.getItem('enft_users_v3') || '{}');
+    }
+
+    function saveCurrentUser() {
+      if (!currentUser) return;
+      const users = loadAllUsers();
+      users[currentUser.name] = currentUser;
+      saveAllUsers(users);
+    }
+
     function refreshUI() {
       if (!currentUser) return;
       
-      const power = getCurrentTapPower();
+      const power = getTapPower();
       const critChance = getCritChance();
       
       balanceSpan.textContent = currentUser.balance.toFixed(1);
       tapPowerSpan.textContent = power.toFixed(1);
       critChanceDisplay.textContent = critChance + '%';
       
-      // Улучшение удара
       const punchCost = getPunchCost();
       punchCostSpan.textContent = punchCost;
       punchLevelSpan.textContent = `УР. ${currentUser.punchLevel}`;
+      buyPunchBtn.classList.toggle('disabled', currentUser.balance < punchCost);
       
-      if (currentUser.balance < punchCost) {
-        buyPunchBtn.classList.add('disabled');
-      } else {
-        buyPunchBtn.classList.remove('disabled');
-      }
-      
-      // Крит удар
       const critCost = getCritCost();
       critCostSpan.textContent = critCost;
       critLevelSpan.textContent = `УР. ${currentUser.critLevel}`;
+      buyCritBtn.classList.toggle('disabled', currentUser.balance < critCost || critChance >= MAX_CRIT);
       
-      if (currentUser.balance < critCost) {
-        buyCritBtn.classList.add('disabled');
-      } else {
-        buyCritBtn.classList.remove('disabled');
-      }
+      randomBgBtn.classList.toggle('disabled', currentUser.balance < RANDOM_BG_COST);
       
-      // Рандомный фон
-      if (currentUser.balance < RANDOM_BG_COST) {
-        randomBgBtn.classList.add('disabled');
-      } else {
-        randomBgBtn.classList.remove('disabled');
-      }
-      
-      // Обновление профиля
       profileName.textContent = currentUser.name;
       profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
       
-      // Применяем текущий фон
-      applyBackground(currentUser.currentBg);
+      applyBackground(currentUser.currentBg || 'bg-default');
+      
+      // Ежедневный бонус
+      updateDailyBonus();
     }
 
-    // Сохранение всех пользователей
-    function saveAllUsers(users) {
-      localStorage.setItem('enft_all_users_v2', JSON.stringify(users));
-    }
-
-    function loadAllUsers() {
-      const saved = localStorage.getItem('enft_all_users_v2');
-      return saved ? JSON.parse(saved) : {};
-    }
-
-    // Сохранение текущего пользователя
-    function saveCurrentUser() {
+    function updateDailyBonus() {
       if (!currentUser) return;
-      const allUsers = loadAllUsers();
-      allUsers[currentUser.name] = {
-        ...currentUser,
-        password: currentUser.password // сохраняем пароль
-      };
-      saveAllUsers(allUsers);
+      
+      const now = Date.now();
+      const lastClaim = currentUser.lastDailyClaim || 0;
+      const cooldown = 24 * 60 * 60 * 1000;
+      const timeLeft = lastClaim + cooldown - now;
+      
+      if (timeLeft <= 0) {
+        dailyTimer.textContent = '+50 EnFT доступно!';
+        dailyBonusBtn.classList.remove('disabled');
+      } else {
+        const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+        const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        dailyTimer.textContent = `Доступно через ${hours}ч ${minutes}м`;
+        dailyBonusBtn.classList.add('disabled');
+      }
     }
 
-    // Регистрация
+    function claimDailyBonus() {
+      if (!currentUser) return;
+      
+      const now = Date.now();
+      const lastClaim = currentUser.lastDailyClaim || 0;
+      const cooldown = 24 * 60 * 60 * 1000;
+      
+      if (now - lastClaim < cooldown) return;
+      
+      currentUser.balance += 50;
+      currentUser.lastDailyClaim = now;
+      
+      messageDiv.textContent = '🎁 Получено 50 EnFT!';
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    }
+
+    function updateAchievementsList() {
+      if (!currentUser) return;
+      
+      const list = document.getElementById('achievementsList');
+      list.innerHTML = '';
+      
+      ACHIEVEMENTS.forEach(ach => {
+        const completed = currentUser.achievements?.includes(ach.id) || ach.check(currentUser);
+        const card = document.createElement('div');
+        card.className = 'achievement-card';
+        card.innerHTML = `
+          <div class="achievement-info">
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-desc">${ach.desc} · +${ach.reward} EnFT</div>
+          </div>
+          <div class="achievement-status ${completed ? '' : 'achievement-locked'}">
+            ${completed ? '✓' : '🔒'}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function checkAchievements() {
+      if (!currentUser) return;
+      
+      if (!currentUser.achievements) currentUser.achievements = [];
+      
+      ACHIEVEMENTS.forEach(ach => {
+        if (!currentUser.achievements.includes(ach.id) && ach.check(currentUser)) {
+          currentUser.achievements.push(ach.id);
+          currentUser.balance += ach.reward;
+          messageDiv.textContent = `🏆 Достижение: ${ach.name}! +${ach.reward} EnFT`;
+          playSound('buy');
+        }
+      });
+      
+      saveCurrentUser();
+    }
+
+    function updateLeaderboard() {
+      const users = loadAllUsers();
+      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance).slice(0, 5);
+      
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+      
+      sorted.forEach((user, i) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        item.innerHTML = `
+          <span class="leaderboard-rank">#${i + 1}</span>
+          <span class="leaderboard-name">${user.name}</span>
+          <span class="leaderboard-balance">${user.balance.toFixed(1)} ⚡</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
     function register() {
       const name = usernameInput.value.trim();
       const password = passwordInput.value;
       
       if (!name || !password) {
         alert('Введи ник и пароль!');
-        return false;
+        return;
       }
       
-      if (password.length < 3) {
-        alert('Пароль должен быть минимум 3 символа!');
-        return false;
-      }
+      const users = loadAllUsers();
       
-      const allUsers = loadAllUsers();
-      
-      if (isLoginMode) {
-        // Вход
-        if (!allUsers[name]) {
-          alert('Пользователь не найден!');
-          return false;
-        }
-        
-        if (allUsers[name].password !== password) {
+      if (users[name]) {
+        if (users[name].password !== password) {
           alert('Неверный пароль!');
-          return false;
+          return;
         }
-        
-        currentUser = allUsers[name];
-        messageDiv.textContent = `С возвращением, ${name}!`;
+        currentUser = users[name];
       } else {
-        // Регистрация
-        if (allUsers[name]) {
-          alert('Пользователь уже существует!');
-          return false;
-        }
-        
         currentUser = {
-          name: name,
-          password: password,
+          name,
+          password,
           balance: 0.0,
           punchLevel: 0,
           critLevel: 0,
-          currentBg: 'bg-default'
+          currentBg: 'bg-default',
+          totalTaps: 0,
+          totalCrits: 0,
+          bgPurchases: 0,
+          achievements: [],
+          lastDailyClaim: 0
         };
-        
-        allUsers[name] = currentUser;
-        saveAllUsers(allUsers);
-        messageDiv.textContent = `Добро пожаловать, ${name}!`;
+        users[name] = currentUser;
+        saveAllUsers(users);
       }
+      
+      // Инициализация
+      if (!currentUser.totalTaps) currentUser.totalTaps = 0;
+      if (!currentUser.totalCrits) currentUser.totalCrits = 0;
+      if (!currentUser.bgPurchases) currentUser.bgPurchases = 0;
+      if (!currentUser.achievements) currentUser.achievements = [];
       
       registerScreen.style.display = 'none';
       mainScreen.style.display = 'block';
       refreshUI();
-      return true;
+      checkAchievements();
+      enableSounds();
+      playSound('buy');
     }
 
-    // Выход
     function logout() {
       saveCurrentUser();
       currentUser = null;
@@ -728,146 +947,106 @@
       mainScreen.style.display = 'none';
       usernameInput.value = '';
       passwordInput.value = '';
-      applyBackground('bg-default');
+      document.body.className = 'bg-default';
     }
 
-    // Покупка улучшения удара
-    function buyPunchUpgrade() {
+    function buyPunch() {
       if (!currentUser) return;
-      
       const cost = getPunchCost();
-      if (currentUser.balance < cost) {
-        messageDiv.textContent = '❌ Недостаточно EnFT';
-        return;
-      }
+      if (currentUser.balance < cost) return;
       
       currentUser.balance -= cost;
       currentUser.punchLevel++;
       
-      messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punchLevel}! +${PUNCH_BONUS} к силе`;
+      playSound('buy');
+      messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punchLevel}!`;
       refreshUI();
+      checkAchievements();
       saveCurrentUser();
     }
 
-    // Покупка крита
-    function buyCritUpgrade() {
+    function buyCrit() {
       if (!currentUser) return;
+      if (getCritChance() >= MAX_CRIT) return;
       
       const cost = getCritCost();
-      if (currentUser.balance < cost) {
-        messageDiv.textContent = '❌ Недостаточно EnFT';
-        return;
-      }
-      
-      if (getCritChance() >= 100) {
-        messageDiv.textContent = '❌ Максимальный шанс крита (100%)';
-        return;
-      }
+      if (currentUser.balance < cost) return;
       
       currentUser.balance -= cost;
       currentUser.critLevel++;
       
-      messageDiv.textContent = `🎯 Шанс крита увеличен до ${getCritChance()}%!`;
+      playSound('buy');
+      messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`;
       refreshUI();
+      checkAchievements();
       saveCurrentUser();
     }
 
-    // Рандомный фон
-    function buyRandomBackground() {
+    function buyRandomBg() {
       if (!currentUser) return;
-      
-      if (currentUser.balance < RANDOM_BG_COST) {
-        messageDiv.textContent = '❌ Недостаточно EnFT (нужно 50)';
-        return;
-      }
+      if (currentUser.balance < RANDOM_BG_COST) return;
       
       currentUser.balance -= RANDOM_BG_COST;
+      currentUser.bgPurchases = (currentUser.bgPurchases || 0) + 1;
       
-      // Выбираем случайный фон (кроме текущего для интереса)
-      let availableBgs = BACKGROUNDS.filter(bg => bg.class !== currentUser.currentBg);
-      if (availableBgs.length === 0) {
-        availableBgs = BACKGROUNDS;
-      }
-      
-      const randomBg = availableBgs[Math.floor(Math.random() * availableBgs.length)];
+      const available = BACKGROUNDS.filter(bg => bg.class !== currentUser.currentBg);
+      const randomBg = available[Math.floor(Math.random() * available.length)];
       currentUser.currentBg = randomBg.class;
       
+      playSound('buy');
       messageDiv.textContent = `🎲 Новый фон: ${randomBg.name}!`;
       refreshUI();
+      checkAchievements();
       saveCurrentUser();
     }
 
-    // Тап
     function handleTap(event) {
       if (!currentUser) return;
       
-      let earned = getCurrentTapPower();
+      currentUser.totalTaps = (currentUser.totalTaps || 0) + 1;
+      
+      let earned = getTapPower();
       const isCrit = Math.random() * 100 < getCritChance();
       
       if (isCrit) {
         earned *= 2;
+        currentUser.totalCrits = (currentUser.totalCrits || 0) + 1;
+        coinGfx.classList.add('crit');
+        setTimeout(() => coinGfx.classList.remove('crit'), 100);
+        playSound('crit');
+      } else {
+        playSound('tap');
       }
       
       currentUser.balance += earned;
       
-      let x = event.clientX || window.innerWidth / 2;
-      let y = event.clientY || window.innerHeight / 2;
+      const x = event.clientX || window.innerWidth / 2;
+      const y = event.clientY || window.innerHeight / 2;
       showFloatingNumber(x, y, earned, isCrit);
       
       refreshUI();
+      checkAchievements();
       saveCurrentUser();
       
-      if (isCrit) {
-        messageDiv.textContent = `💥 КРИТ! +${earned.toFixed(1)} EnFT`;
-      } else {
-        messageDiv.textContent = `+${earned.toFixed(1)} EnFT`;
-      }
-    }
-
-    // Переключение режима регистрация/вход
-    function toggleAuthMode() {
-      isLoginMode = !isLoginMode;
-      if (isLoginMode) {
-        authTitle.textContent = 'Вход в аккаунт';
-        registerBtn.textContent = 'ВОЙТИ';
-        toggleAuth.textContent = 'Нет аккаунта? Зарегистрироваться';
-      } else {
-        authTitle.textContent = 'Регистрация';
-        registerBtn.textContent = 'ЗАРЕГИСТРИРОВАТЬСЯ';
-        toggleAuth.textContent = 'Уже есть аккаунт? Войти';
-      }
+      messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`;
     }
 
     // Инициализация
-    function init() {
-      // Обработчики регистрации
-      registerBtn.addEventListener('click', register);
-      
-      usernameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') register();
-      });
-      
-      passwordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') register();
-      });
-      
-      toggleAuth.addEventListener('click', toggleAuthMode);
-      
-      // Выход
-      logoutBtn.addEventListener('click', logout);
-      
-      // Тап
-      tapButton.addEventListener('click', handleTap);
-      
-      // Улучшения
-      buyPunchBtn.addEventListener('click', buyPunchUpgrade);
-      buyCritBtn.addEventListener('click', buyCritUpgrade);
-      
-      // Рандомный фон
-      randomBgBtn.addEventListener('click', buyRandomBackground);
-    }
-
-    init();
+    registerBtn.addEventListener('click', register);
+    logoutBtn.addEventListener('click', logout);
+    tapButton.addEventListener('click', handleTap);
+    buyPunchBtn.addEventListener('click', buyPunch);
+    buyCritBtn.addEventListener('click', buyCrit);
+    randomBgBtn.addEventListener('click', buyRandomBg);
+    dailyBonusBtn.addEventListener('click', claimDailyBonus);
+    
+    usernameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
+    passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') register(); });
+    
+    // Таймер ежедневного бонуса
+    setInterval(() => {
+      if (currentUser) updateDailyBonus();
+    }, 1000);
   })();
 </script>
 </body>
