@@ -47,21 +47,23 @@
     .auth-screen { text-align: center; padding: 20px 10px; }
     .auth-title { font-size: 28px; font-weight: 800; color: #ffd28f; text-shadow: 0 0 20px #ff8c00; margin-bottom: 10px; }
     .auth-subtitle { color: #b89b72; font-size: 14px; margin-bottom: 30px; }
+    
+    .password-wrapper { position: relative; margin-bottom: 15px; }
     .auth-input {
-      width: 100%; padding: 16px 20px; background: #1a1425; border: 2px solid #ff8c00;
-      border-radius: 50px; color: #ffdca8; font-size: 18px; outline: none;
-      margin-bottom: 15px; text-align: center;
+      width: 100%; padding: 16px 50px 16px 20px; background: #1a1425; border: 2px solid #ff8c00;
+      border-radius: 50px; color: #ffdca8; font-size: 18px; outline: none; text-align: center;
     }
     .auth-input::placeholder { color: #8a7a5f; }
-    .auth-input.error { border-color: #ff4444; }
-    .error-message { color: #ff6b6b; font-size: 12px; margin-top: -10px; margin-bottom: 10px; display: none; }
+    .toggle-password {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; font-size: 20px; user-select: none; color: #b89b72;
+    }
+    
     .auth-btn {
       width: 100%; padding: 16px; background: linear-gradient(135deg, #ff8c00, #ffaa33);
       border: none; border-radius: 50px; color: #0a0a0f; font-weight: 800;
       font-size: 18px; cursor: pointer; margin-top: 10px;
     }
-    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .auth-toggle { color: #b89b72; margin-top: 20px; cursor: pointer; font-size: 14px; }
     
     .main-screen { display: none; }
     .profile-section {
@@ -209,34 +211,28 @@
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-100px); }
     }
-    
-    @media (max-width: 400px) {
-      .coin-gfx { width: 150px; height: 150px; }
-      .coin-gfx span { font-size: 42px; }
-      .balance-value { font-size: 44px; }
-    }
   </style>
 </head>
 <body class="bg-default font-inter">
 <div class="game-container">
   
-  <!-- ЭКРАН ВХОДА/РЕГИСТРАЦИИ -->
+  <!-- ЭКРАН ВХОДА -->
   <div id="authScreen" class="auth-screen">
     <div class="auth-title">🚀 EnFT Tap</div>
     <div class="auth-subtitle">Введи email и пароль</div>
     
-    <input type="email" id="emailInput" class="auth-input" placeholder="Email" autocomplete="email">
-    <div id="emailError" class="error-message">Только латиница, цифры, точка и подчёркивание</div>
+    <input type="email" id="emailInput" class="auth-input" placeholder="Email" autocomplete="email" style="margin-bottom: 15px;">
     
-    <input type="password" id="passwordInput" class="auth-input" placeholder="Пароль" autocomplete="current-password">
-    <div id="passwordError" class="error-message">Минимум 6 символов</div>
+    <div class="password-wrapper">
+      <input type="password" id="passwordInput" class="auth-input" placeholder="Пароль" autocomplete="current-password">
+      <span class="toggle-password" id="togglePassword">👁️</span>
+    </div>
     
     <button id="authBtn" class="auth-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
-    
-    <div id="authToggle" class="auth-toggle">Впервые? Просто введи данные</div>
+    <div id="authMessage" style="color: #ff6b6b; font-size: 12px; margin-top: 10px;"></div>
   </div>
   
-  <!-- ОСНОВНОЙ ЭКРАН ИГРЫ -->
+  <!-- ОСНОВНОЙ ЭКРАН -->
   <div id="mainScreen" class="main-screen">
     <div class="profile-section">
       <div class="profile-info">
@@ -248,7 +244,6 @@
     
     <div class="tabs">
       <div class="tab active" data-tab="game">Игра</div>
-      <div class="tab" data-tab="achievements">Достижения</div>
       <div class="tab" data-tab="leaderboard">Топ</div>
     </div>
     
@@ -319,10 +314,6 @@
       <div id="messageArea" class="status-message"></div>
     </div>
     
-    <div id="achievementsScreen" class="screen">
-      <div id="achievementsList"></div>
-    </div>
-    
     <div id="leaderboardScreen" class="screen">
       <div id="leaderboardList"></div>
     </div>
@@ -332,13 +323,12 @@
 </div>
 
 <script>
-  // ========== КОНФИГ SUPABASE ==========
+  // КОНФИГ SUPABASE
   const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
-  const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9' // ВСТАВЬ СВОЙ ПОЛНЫЙ КЛЮЧ
+  const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9' // ЗАМЕНИ НА СВОЙ ПОЛНЫЙ КЛЮЧ
   
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   
-  // ========== ПЕРЕМЕННЫЕ ==========
   let currentUser = null
   const PUNCH_BASE = 50, PUNCH_MULT = 1.4, PUNCH_BONUS = 0.5
   const CRIT_BASE = 100, CRIT_MULT = 1.5, CRIT_BONUS = 2, MAX_CRIT = 50
@@ -348,21 +338,14 @@
   const FONT_LIST = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo']
   const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One']
   
-  const ACHIEVEMENTS = [
-    { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10 },
-    { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50 },
-    { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30 },
-    { id: 'bg_5', name: 'Дизайнер', desc: '5 смен фона', reward: 100 }
-  ]
-  
-  // ========== UI ЭЛЕМЕНТЫ ==========
+  // UI
   const authScreen = document.getElementById('authScreen')
   const mainScreen = document.getElementById('mainScreen')
   const emailInput = document.getElementById('emailInput')
   const passwordInput = document.getElementById('passwordInput')
-  const emailError = document.getElementById('emailError')
-  const passwordError = document.getElementById('passwordError')
   const authBtn = document.getElementById('authBtn')
+  const authMessage = document.getElementById('authMessage')
+  const togglePassword = document.getElementById('togglePassword')
   const logoutBtn = document.getElementById('logoutBtn')
   const profileName = document.getElementById('profileName')
   const profileAvatar = document.getElementById('profileAvatar')
@@ -380,10 +363,22 @@
   const currentBgName = document.getElementById('currentBgName')
   const currentFontName = document.getElementById('currentFontName')
   
-  // ========== ФУНКЦИИ ==========
-  function validateEmail(email) {
-    return /^[a-zA-Z0-9._@]+$/.test(email) && email.includes('@') && email.includes('.')
-  }
+  // Глазик
+  togglePassword.addEventListener('click', () => {
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
+    togglePassword.textContent = passwordInput.type === 'password' ? '👁️' : '🔒'
+  })
+  
+  // Вкладки
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+      tab.classList.add('active')
+      document.getElementById(tab.dataset.tab + 'Screen').classList.add('active')
+      if (tab.dataset.tab === 'leaderboard') updateLeaderboard()
+    })
+  })
   
   function getTapPower() {
     return 1.0 + (currentUser?.punch_level || 0) * PUNCH_BONUS
@@ -406,14 +401,18 @@
     return data || []
   }
   
-  function getPlayerRank(balance) {
-    return getLeaderboard().then(data => data.findIndex(p => p.balance <= balance) + 1 || data.length + 1)
-  }
-  
-  function getDailyBonus(rank) {
-    if (rank <= 5) return 150
-    if (rank <= 10) return 100
-    return 50
+  async function updateLeaderboard() {
+    const data = await getLeaderboard()
+    const list = document.getElementById('leaderboardList')
+    list.innerHTML = data.map((p, i) => {
+      const rank = i + 1
+      const badge = rank <= 5 ? '<span class="top-badge">x3</span>' : rank <= 10 ? '<span class="top-badge">x2</span>' : ''
+      return `<div class="leaderboard-item">
+        <span class="leaderboard-rank">#${rank}</span>
+        <span class="leaderboard-name">${p.email.split('@')[0]} ${badge}</span>
+        <span class="leaderboard-balance">${(p.balance || 0).toFixed(1)} ⚡</span>
+      </div>`
+    }).join('')
   }
   
   async function refreshUI() {
@@ -450,7 +449,10 @@
     
     const lb = await getLeaderboard()
     const rank = lb.findIndex(p => p.email === currentUser.email) + 1
-    const bonus = getDailyBonus(rank)
+    let bonus = 50
+    if (rank <= 5) bonus = 150
+    else if (rank <= 10) bonus = 100
+    
     const multiplier = rank <= 5 ? ' (ТОП-5 x3!)' : rank <= 10 ? ' (ТОП-10 x2!)' : ''
     
     if (left <= 0) {
@@ -471,7 +473,9 @@
     
     const lb = await getLeaderboard()
     const rank = lb.findIndex(p => p.email === currentUser.email) + 1
-    const bonus = getDailyBonus(rank)
+    let bonus = 50
+    if (rank <= 5) bonus = 150
+    else if (rank <= 10) bonus = 100
     
     currentUser.balance += bonus
     currentUser.last_daily = now
@@ -481,36 +485,25 @@
     refreshUI()
   }
   
-  async function saveUser() {
-    if (!currentUser) return
-    await supabase.from('players').upsert(currentUser)
-  }
-  
   async function loginOrRegister() {
     const email = emailInput.value.trim().toLowerCase()
     const password = passwordInput.value
     
-    emailError.style.display = 'none'
-    passwordError.style.display = 'none'
-    emailInput.classList.remove('error')
-    
-    if (!validateEmail(email)) {
-      emailError.style.display = 'block'
-      emailInput.classList.add('error')
+    if (!email.includes('@') || !email.includes('.')) {
+      authMessage.textContent = 'Введи корректный email'
       return
     }
     
     if (password.length < 6) {
-      passwordError.style.display = 'block'
+      authMessage.textContent = 'Пароль минимум 6 символов'
       return
     }
     
-    // Проверяем существование
     const { data } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
     
     if (data) {
       if (data.password !== password) {
-        alert('Неверный пароль!')
+        authMessage.textContent = 'Неверный пароль'
         return
       }
       currentUser = data
@@ -529,19 +522,18 @@
     authScreen.style.display = 'none'
     mainScreen.style.display = 'block'
     refreshUI()
-    updateAchievements()
   }
   
   async function handleTap(e) {
     if (!currentUser) return
     
-    currentUser.total_taps++
+    currentUser.total_taps = (currentUser.total_taps || 0) + 1
     let earned = getTapPower()
     const isCrit = Math.random() * 100 < getCritChance()
     
     if (isCrit) {
       earned *= 2
-      currentUser.total_crits++
+      currentUser.total_crits = (currentUser.total_crits || 0) + 1
       coinGfx.classList.add('crit')
       setTimeout(() => coinGfx.classList.remove('crit'), 100)
     }
@@ -563,17 +555,15 @@
     }).eq('email', currentUser.email)
     
     refreshUI()
-    checkAchievements()
     messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
   }
   
   async function buyPunch() {
     const cost = getPunchCost()
     if (currentUser.balance < cost) return
-    
     currentUser.balance -= cost
     currentUser.punch_level++
-    await saveUser()
+    await supabase.from('players').update({ balance: currentUser.balance, punch_level: currentUser.punch_level }).eq('email', currentUser.email)
     refreshUI()
     messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
   }
@@ -582,10 +572,9 @@
     if (getCritChance() >= MAX_CRIT) return
     const cost = getCritCost()
     if (currentUser.balance < cost) return
-    
     currentUser.balance -= cost
     currentUser.crit_level++
-    await saveUser()
+    await supabase.from('players').update({ balance: currentUser.balance, crit_level: currentUser.crit_level }).eq('email', currentUser.email)
     refreshUI()
     messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`
   }
@@ -593,12 +582,11 @@
   async function randomBg() {
     if (currentUser.balance < BG_COST) return
     currentUser.balance -= BG_COST
-    currentUser.bg_purchases++
+    currentUser.bg_purchases = (currentUser.bg_purchases || 0) + 1
     const available = BG_LIST.filter(b => b !== currentUser.current_bg)
     currentUser.current_bg = available[Math.floor(Math.random() * available.length)]
-    await saveUser()
+    await supabase.from('players').update({ balance: currentUser.balance, bg_purchases: currentUser.bg_purchases, current_bg: currentUser.current_bg }).eq('email', currentUser.email)
     refreshUI()
-    checkAchievements()
   }
   
   async function randomFont() {
@@ -606,16 +594,47 @@
     currentUser.balance -= FONT_COST
     const available = FONT_LIST.filter(f => f !== currentUser.current_font)
     currentUser.current_font = available[Math.floor(Math.random() * available.length)]
-    await saveUser()
+    await supabase.from('players').update({ balance: currentUser.balance, current_font: currentUser.current_font }).eq('email', currentUser.email)
     refreshUI()
   }
   
-  function checkAchievements() {
-    const completed = []
-    if (currentUser.total_taps >= 100) completed.push('taps_100')
-    if (currentUser.total_taps >= 1000) completed.push('taps_1000')
-    if (currentUser.total_crits >= 10) completed.push('crit_10')
-    if (currentUser.bg_purchases >= 5) completed.push('bg_5')
-    
-    completed.forEach(id => {
-      const ach = A
+  function logout() {
+    currentUser = null
+    localStorage.removeItem('enft_email')
+    authScreen.style.display = 'block'
+    mainScreen.style.display = 'none'
+    emailInput.value = ''
+    passwordInput.value = ''
+    authMessage.textContent = ''
+  }
+  
+  // Привязка событий
+  authBtn.addEventListener('click', loginOrRegister)
+  logoutBtn.addEventListener('click', logout)
+  document.getElementById('tapButton').addEventListener('click', handleTap)
+  document.getElementById('buyPunchBtn').addEventListener('click', buyPunch)
+  document.getElementById('buyCritBtn').addEventListener('click', buyCrit)
+  document.getElementById('randomBgBtn').addEventListener('click', randomBg)
+  document.getElementById('randomFontBtn').addEventListener('click', randomFont)
+  dailyBtn.addEventListener('click', claimDaily)
+  
+  emailInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
+  passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
+  
+  // Авто-вход
+  const savedEmail = localStorage.getItem('enft_email')
+  if (savedEmail) {
+    supabase.from('players').select('*').eq('email', savedEmail).maybeSingle().then(({ data }) => {
+      if (data) {
+        currentUser = data
+        authScreen.style.display = 'none'
+        mainScreen.style.display = 'block'
+        refreshUI()
+      }
+    })
+  }
+  
+  setInterval(() => { if (currentUser) updateDailyBonus() }, 1000)
+</script>
+</body>
+</html>
