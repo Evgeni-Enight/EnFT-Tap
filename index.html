@@ -16,6 +16,7 @@
       min-height: 100vh;
       background: #0a0a0f;
       background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%);
+      background-attachment: fixed;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,7 +38,15 @@
     }
 
     body.bg-matrix {
-      background-image: linear-gradient(0deg, #0a1a0a 0%, #0a0a0a 100%);
+      background-image: linear-gradient(0deg, #0a1a0a 0%, #020302 100%);
+    }
+
+    body.bg-sunset {
+      background-image: linear-gradient(45deg, #2e0a0a 0%, #2e1a0a 50%, #1a0a2e 100%);
+    }
+
+    body.bg-ocean {
+      background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%);
     }
 
     .game-container {
@@ -74,12 +83,16 @@
       color: #ffdca8;
       font-size: 18px;
       outline: none;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       text-align: center;
     }
 
     .register-input::placeholder {
       color: #8a7a5f;
+    }
+
+    .register-input[type="password"] {
+      -webkit-text-security: disc;
     }
 
     .register-btn {
@@ -94,10 +107,22 @@
       cursor: pointer;
       box-shadow: 0 0 30px #ff8c0080;
       transition: 0.2s;
+      margin-top: 10px;
     }
 
     .register-btn:active {
       transform: scale(0.95);
+    }
+
+    .auth-toggle {
+      color: #b89b72;
+      margin-top: 15px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .auth-toggle:hover {
+      color: #ffc978;
     }
 
     /* Основной экран */
@@ -308,83 +333,44 @@
       pointer-events: none;
     }
 
-    /* Магазин фонов */
-    .shop-section {
+    /* Рандомный фон */
+    .random-bg-section {
       margin-top: 20px;
       padding-top: 15px;
       border-top: 1px solid #ff8c0030;
     }
 
-    .shop-title {
+    .random-bg-title {
       font-size: 18px;
       color: #ffc978;
       margin-bottom: 15px;
       text-align: center;
     }
 
-    .backgrounds-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    .bg-card {
-      background: #1a1425;
-      border: 1px solid #ff8c0050;
-      border-radius: 20px;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .bg-card.active {
-      border: 2px solid #00ff88;
-      box-shadow: 0 0 15px #00ff8880;
-    }
-
-    .bg-card.owned {
-      border-color: #ffaa33;
-    }
-
-    .bg-preview {
+    .random-bg-btn {
       width: 100%;
-      height: 60px;
-      border-radius: 15px;
-      margin-bottom: 8px;
-    }
-
-    .bg-preview.default {
-      background: radial-gradient(circle at 30% 20%, #1a1425, #030205);
-    }
-
-    .bg-preview.neon {
-      background: linear-gradient(135deg, #0a0a2e, #1a0a2e, #0a1a2e);
-    }
-
-    .bg-preview.gold {
-      background: radial-gradient(circle at 70% 30%, #3a2a0a, #0a0a05);
-    }
-
-    .bg-preview.matrix {
-      background: linear-gradient(0deg, #0a1a0a, #0a0a0a);
-    }
-
-    .bg-name {
-      font-size: 14px;
+      background: linear-gradient(135deg, #8a2be2, #4a0080);
+      border: 1px solid #ba7bff;
       color: #ffdca8;
-      margin-bottom: 5px;
-    }
-
-    .bg-price {
-      font-size: 14px;
-      color: #ffaa00;
       font-weight: 700;
+      font-size: 16px;
+      padding: 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
     }
 
-    .bg-owned {
-      font-size: 12px;
-      color: #00ff88;
+    .random-bg-btn:active {
+      transform: translateY(2px);
+    }
+
+    .current-bg-info {
+      text-align: center;
+      color: #b89b72;
+      font-size: 14px;
     }
 
     .status-message {
@@ -406,6 +392,12 @@
       animation: floatUp 0.8s ease-out forwards;
     }
 
+    .floating-number.crit {
+      color: #ff4444;
+      text-shadow: 0 0 30px #ff0000, 0 2px 4px #000;
+      font-size: 42px;
+    }
+
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-100px); }
@@ -420,13 +412,14 @@
 </head>
 <body class="bg-default">
 <div class="game-container">
-  <!-- Экран регистрации -->
+  <!-- Экран регистрации/входа -->
   <div id="registerScreen" class="register-screen">
     <div class="register-title">🚀 EnFT Tap</div>
-    <div style="margin-bottom: 30px; color: #b89b72;">Введи никнейм чтобы начать</div>
+    <div style="margin-bottom: 30px; color: #b89b72;" id="authTitle">Регистрация</div>
     <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20" autocomplete="off">
-    <button id="registerBtn" class="register-btn">НАЧАТЬ ИГРУ</button>
-    <div style="margin-top: 20px; color: #6a5a47; font-size: 12px;">Тапай, улучшай, становись легендой</div>
+    <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30" autocomplete="off">
+    <button id="registerBtn" class="register-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+    <div class="auth-toggle" id="toggleAuth">Уже есть аккаунт? Войти</div>
   </div>
 
   <!-- Основной экран игры -->
@@ -452,8 +445,8 @@
         <div class="stat-value" id="tapPowerDisplay">1.0</div>
       </div>
       <div class="stat-item">
-        <div class="stat-label">КОМБО УР.</div>
-        <div class="stat-value" id="comboLevelDisplay">0</div>
+        <div class="stat-label">КРИТ ШАНС</div>
+        <div class="stat-value" id="critChanceDisplay">0%</div>
       </div>
     </div>
 
@@ -472,50 +465,30 @@
         <span class="upgrade-cost" id="punchCostDisplay">50</span>
       </div>
       <div class="upgrade-desc">
-        <span>+0.2 EnFT за клик</span>
+        <span>+0.5 EnFT за клик</span>
         <span class="level-badge" id="punchLevelDisplay">УР. 0</span>
       </div>
       <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
     </div>
 
-    <!-- Комбо-заряд (бесконечное) -->
+    <!-- Критический удар (бесконечное) -->
     <div class="upgrade-card">
       <div class="upgrade-header">
-        <span class="upgrade-title">⚡ КОМБО-ЗАРЯД</span>
-        <span class="upgrade-cost" id="comboCostDisplay">150</span>
+        <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ УДАР</span>
+        <span class="upgrade-cost" id="critCostDisplay">100</span>
       </div>
       <div class="upgrade-desc">
-        <span>+0.3 EnFT за клик</span>
-        <span class="level-badge" id="comboLevelDisplay2">УР. 0</span>
+        <span>+5% шанс x2 урона</span>
+        <span class="level-badge" id="critLevelDisplay">УР. 0</span>
       </div>
-      <button class="buy-btn" id="buyComboBtn">АКТИВИРОВАТЬ</button>
+      <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
     </div>
 
-    <!-- Магазин фонов -->
-    <div class="shop-section">
-      <div class="shop-title">🎨 СМЕНА ФОНА</div>
-      <div class="backgrounds-grid">
-        <div class="bg-card owned active" data-bg="default">
-          <div class="bg-preview default"></div>
-          <div class="bg-name">Стандарт</div>
-          <div class="bg-owned">✓ Бесплатно</div>
-        </div>
-        <div class="bg-card" data-bg="neon" id="bgNeon">
-          <div class="bg-preview neon"></div>
-          <div class="bg-name">Неон</div>
-          <div class="bg-price" id="neonPrice">100 EnFT</div>
-        </div>
-        <div class="bg-card" data-bg="gold" id="bgGold">
-          <div class="bg-preview gold"></div>
-          <div class="bg-name">Золото</div>
-          <div class="bg-price" id="goldPrice">300 EnFT</div>
-        </div>
-        <div class="bg-card" data-bg="matrix" id="bgMatrix">
-          <div class="bg-preview matrix"></div>
-          <div class="bg-name">Матрица</div>
-          <div class="bg-price" id="matrixPrice">500 EnFT</div>
-        </div>
-      </div>
+    <!-- Рандомный фон -->
+    <div class="random-bg-section">
+      <div class="random-bg-title">🎲 РАНДОМНЫЙ ФОН</div>
+      <button class="random-bg-btn" id="randomBgBtn">50 EnFT · СМЕНИТЬ ФОН</button>
+      <div class="current-bg-info" id="currentBgName">Текущий: Стандарт</div>
     </div>
 
     <div id="messageArea" class="status-message"></div>
@@ -527,50 +500,66 @@
     "use strict";
 
     // ---------- СОСТОЯНИЕ ИГРЫ ----------
-    let currentUser = null; // { name, balance, punchLevel, comboLevel, ownedBackgrounds, currentBg }
+    let currentUser = null;
+    let isLoginMode = false; // false = регистрация, true = вход
     
     // Конфигурация улучшений
     const PUNCH_BASE_COST = 50;
-    const PUNCH_COST_MULTIPLIER = 1.5;
-    const PUNCH_BONUS = 0.2;
+    const PUNCH_COST_MULTIPLIER = 1.4;
+    const PUNCH_BONUS = 0.5;
     
-    const COMBO_BASE_COST = 150;
-    const COMBO_COST_MULTIPLIER = 1.8;
-    const COMBO_BONUS = 0.3;
+    const CRIT_BASE_COST = 100;
+    const CRIT_COST_MULTIPLIER = 1.6;
+    const CRIT_BONUS = 5; // +5% шанса за уровень
     
-    // Конфигурация фонов
-    const BACKGROUNDS = {
-      default: { name: 'Стандарт', price: 0, class: 'bg-default' },
-      neon: { name: 'Неон', price: 100, class: 'bg-neon' },
-      gold: { name: 'Золото', price: 300, class: 'bg-gold' },
-      matrix: { name: 'Матрица', price: 500, class: 'bg-matrix' }
-    };
+    const RANDOM_BG_COST = 50;
+    
+    // Доступные фоны
+    const BACKGROUNDS = [
+      { name: 'Стандарт', class: 'bg-default' },
+      { name: 'Неон', class: 'bg-neon' },
+      { name: 'Золото', class: 'bg-gold' },
+      { name: 'Матрица', class: 'bg-matrix' },
+      { name: 'Закат', class: 'bg-sunset' },
+      { name: 'Океан', class: 'bg-ocean' }
+    ];
 
     // UI элементы
     const registerScreen = document.getElementById('registerScreen');
     const mainScreen = document.getElementById('mainScreen');
     const usernameInput = document.getElementById('usernameInput');
+    const passwordInput = document.getElementById('passwordInput');
     const registerBtn = document.getElementById('registerBtn');
+    const toggleAuth = document.getElementById('toggleAuth');
+    const authTitle = document.getElementById('authTitle');
     const logoutBtn = document.getElementById('logoutBtn');
     const profileAvatar = document.getElementById('profileAvatar');
     const profileName = document.getElementById('profileName');
     const balanceSpan = document.getElementById('balanceDisplay');
     const tapPowerSpan = document.getElementById('tapPowerDisplay');
-    const comboLevelDisplay = document.getElementById('comboLevelDisplay');
+    const critChanceDisplay = document.getElementById('critChanceDisplay');
     const punchCostSpan = document.getElementById('punchCostDisplay');
-    const comboCostSpan = document.getElementById('comboCostDisplay');
+    const critCostSpan = document.getElementById('critCostDisplay');
     const punchLevelSpan = document.getElementById('punchLevelDisplay');
-    const comboLevelSpan = document.getElementById('comboLevelDisplay2');
+    const critLevelSpan = document.getElementById('critLevelDisplay');
+    const currentBgName = document.getElementById('currentBgName');
     const messageDiv = document.getElementById('messageArea');
     
     const tapButton = document.getElementById('tapButton');
     const buyPunchBtn = document.getElementById('buyPunchBtn');
-    const buyComboBtn = document.getElementById('buyComboBtn');
+    const buyCritBtn = document.getElementById('buyCritBtn');
+    const randomBgBtn = document.getElementById('randomBgBtn');
 
     // Вычисление силы тапа
     function getCurrentTapPower() {
       if (!currentUser) return 1.0;
-      return 1.0 + (currentUser.punchLevel * PUNCH_BONUS) + (currentUser.comboLevel * COMBO_BONUS);
+      return 1.0 + (currentUser.punchLevel * PUNCH_BONUS);
+    }
+
+    // Вычисление шанса крита
+    function getCritChance() {
+      if (!currentUser) return 0;
+      return Math.min(currentUser.critLevel * CRIT_BONUS, 100);
     }
 
     // Вычисление стоимости улучшения
@@ -579,16 +568,16 @@
       return Math.floor(PUNCH_BASE_COST * Math.pow(PUNCH_COST_MULTIPLIER, currentUser.punchLevel));
     }
 
-    function getComboCost() {
-      if (!currentUser) return COMBO_BASE_COST;
-      return Math.floor(COMBO_BASE_COST * Math.pow(COMBO_COST_MULTIPLIER, currentUser.comboLevel));
+    function getCritCost() {
+      if (!currentUser) return CRIT_BASE_COST;
+      return Math.floor(CRIT_BASE_COST * Math.pow(CRIT_COST_MULTIPLIER, currentUser.critLevel));
     }
 
     // Всплывающие цифры
-    function showFloatingNumber(x, y, amount) {
+    function showFloatingNumber(x, y, amount, isCrit = false) {
       const floatEl = document.createElement('div');
-      floatEl.className = 'floating-number';
-      floatEl.textContent = `+${amount.toFixed(1)}`;
+      floatEl.className = isCrit ? 'floating-number crit' : 'floating-number';
+      floatEl.textContent = `+${amount.toFixed(1)}${isCrit ? ' 💥' : ''}`;
       floatEl.style.left = (x - 20) + 'px';
       floatEl.style.top = (y - 30) + 'px';
       document.body.appendChild(floatEl);
@@ -598,6 +587,10 @@
     // Применение фона
     function applyBackground(bgClass) {
       document.body.className = bgClass;
+      const bg = BACKGROUNDS.find(b => b.class === bgClass);
+      if (bg) {
+        currentBgName.textContent = `Текущий: ${bg.name}`;
+      }
     }
 
     // Обновление интерфейса
@@ -605,9 +598,11 @@
       if (!currentUser) return;
       
       const power = getCurrentTapPower();
+      const critChance = getCritChance();
+      
       balanceSpan.textContent = currentUser.balance.toFixed(1);
       tapPowerSpan.textContent = power.toFixed(1);
-      comboLevelDisplay.textContent = currentUser.comboLevel;
+      critChanceDisplay.textContent = critChance + '%';
       
       // Улучшение удара
       const punchCost = getPunchCost();
@@ -620,61 +615,39 @@
         buyPunchBtn.classList.remove('disabled');
       }
       
-      // Комбо-заряд
-      const comboCost = getComboCost();
-      comboCostSpan.textContent = comboCost;
-      comboLevelSpan.textContent = `УР. ${currentUser.comboLevel}`;
+      // Крит удар
+      const critCost = getCritCost();
+      critCostSpan.textContent = critCost;
+      critLevelSpan.textContent = `УР. ${currentUser.critLevel}`;
       
-      if (currentUser.balance < comboCost) {
-        buyComboBtn.classList.add('disabled');
+      if (currentUser.balance < critCost) {
+        buyCritBtn.classList.add('disabled');
       } else {
-        buyComboBtn.classList.remove('disabled');
+        buyCritBtn.classList.remove('disabled');
+      }
+      
+      // Рандомный фон
+      if (currentUser.balance < RANDOM_BG_COST) {
+        randomBgBtn.classList.add('disabled');
+      } else {
+        randomBgBtn.classList.remove('disabled');
       }
       
       // Обновление профиля
       profileName.textContent = currentUser.name;
       profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
       
-      // Обновление магазина фонов
-      updateBackgroundShop();
-      
       // Применяем текущий фон
       applyBackground(currentUser.currentBg);
     }
 
-    // Обновление магазина фонов
-    function updateBackgroundShop() {
-      document.querySelectorAll('[data-bg]').forEach(card => {
-        const bg = card.dataset.bg;
-        card.classList.remove('active', 'owned');
-        
-        if (currentUser.currentBg === bg) {
-          card.classList.add('active');
-        }
-        
-        if (currentUser.ownedBackgrounds.includes(bg)) {
-          card.classList.add('owned');
-          const priceEl = card.querySelector('.bg-price');
-          if (priceEl) {
-            priceEl.style.display = 'none';
-          }
-          if (!card.querySelector('.bg-owned')) {
-            const ownedSpan = document.createElement('div');
-            ownedSpan.className = 'bg-owned';
-            ownedSpan.textContent = '✓ Куплено';
-            card.appendChild(ownedSpan);
-          }
-        }
-      });
-    }
-
     // Сохранение всех пользователей
     function saveAllUsers(users) {
-      localStorage.setItem('enft_all_users', JSON.stringify(users));
+      localStorage.setItem('enft_all_users_v2', JSON.stringify(users));
     }
 
     function loadAllUsers() {
-      const saved = localStorage.getItem('enft_all_users');
+      const saved = localStorage.getItem('enft_all_users_v2');
       return saved ? JSON.parse(saved) : {};
     }
 
@@ -682,39 +655,65 @@
     function saveCurrentUser() {
       if (!currentUser) return;
       const allUsers = loadAllUsers();
-      allUsers[currentUser.name] = currentUser;
+      allUsers[currentUser.name] = {
+        ...currentUser,
+        password: currentUser.password // сохраняем пароль
+      };
       saveAllUsers(allUsers);
     }
 
-    // Регистрация/вход
-    function registerUser(name) {
-      if (!name || name.trim() === '') {
-        alert('Введи никнейм!');
+    // Регистрация
+    function register() {
+      const name = usernameInput.value.trim();
+      const password = passwordInput.value;
+      
+      if (!name || !password) {
+        alert('Введи ник и пароль!');
+        return false;
+      }
+      
+      if (password.length < 3) {
+        alert('Пароль должен быть минимум 3 символа!');
         return false;
       }
       
       const allUsers = loadAllUsers();
       
-      if (allUsers[name]) {
-        // Загружаем существующего пользователя
+      if (isLoginMode) {
+        // Вход
+        if (!allUsers[name]) {
+          alert('Пользователь не найден!');
+          return false;
+        }
+        
+        if (allUsers[name].password !== password) {
+          alert('Неверный пароль!');
+          return false;
+        }
+        
         currentUser = allUsers[name];
         messageDiv.textContent = `С возвращением, ${name}!`;
       } else {
-        // Создаем нового
+        // Регистрация
+        if (allUsers[name]) {
+          alert('Пользователь уже существует!');
+          return false;
+        }
+        
         currentUser = {
           name: name,
+          password: password,
           balance: 0.0,
           punchLevel: 0,
-          comboLevel: 0,
-          ownedBackgrounds: ['default'],
-          currentBg: 'default'
+          critLevel: 0,
+          currentBg: 'bg-default'
         };
+        
         allUsers[name] = currentUser;
         saveAllUsers(allUsers);
         messageDiv.textContent = `Добро пожаловать, ${name}!`;
       }
       
-      // Показываем основной экран
       registerScreen.style.display = 'none';
       mainScreen.style.display = 'block';
       refreshUI();
@@ -728,6 +727,7 @@
       registerScreen.style.display = 'block';
       mainScreen.style.display = 'none';
       usernameInput.value = '';
+      passwordInput.value = '';
       applyBackground('bg-default');
     }
 
@@ -749,48 +749,50 @@
       saveCurrentUser();
     }
 
-    // Покупка комбо
-    function buyComboUpgrade() {
+    // Покупка крита
+    function buyCritUpgrade() {
       if (!currentUser) return;
       
-      const cost = getComboCost();
+      const cost = getCritCost();
       if (currentUser.balance < cost) {
         messageDiv.textContent = '❌ Недостаточно EnFT';
         return;
       }
       
-      currentUser.balance -= cost;
-      currentUser.comboLevel++;
+      if (getCritChance() >= 100) {
+        messageDiv.textContent = '❌ Максимальный шанс крита (100%)';
+        return;
+      }
       
-      messageDiv.textContent = `⚡ Комбо улучшено до ур. ${currentUser.comboLevel}! +${COMBO_BONUS} к силе`;
+      currentUser.balance -= cost;
+      currentUser.critLevel++;
+      
+      messageDiv.textContent = `🎯 Шанс крита увеличен до ${getCritChance()}%!`;
       refreshUI();
       saveCurrentUser();
     }
 
-    // Покупка фона
-    function buyBackground(bgId) {
+    // Рандомный фон
+    function buyRandomBackground() {
       if (!currentUser) return;
       
-      if (currentUser.ownedBackgrounds.includes(bgId)) {
-        // Просто переключаем
-        currentUser.currentBg = bgId;
-        messageDiv.textContent = `🎨 Фон изменен на ${BACKGROUNDS[bgId].name}`;
-        refreshUI();
-        saveCurrentUser();
+      if (currentUser.balance < RANDOM_BG_COST) {
+        messageDiv.textContent = '❌ Недостаточно EnFT (нужно 50)';
         return;
       }
       
-      const price = BACKGROUNDS[bgId].price;
-      if (currentUser.balance < price) {
-        messageDiv.textContent = `❌ Недостаточно EnFT (нужно ${price})`;
-        return;
+      currentUser.balance -= RANDOM_BG_COST;
+      
+      // Выбираем случайный фон (кроме текущего для интереса)
+      let availableBgs = BACKGROUNDS.filter(bg => bg.class !== currentUser.currentBg);
+      if (availableBgs.length === 0) {
+        availableBgs = BACKGROUNDS;
       }
       
-      currentUser.balance -= price;
-      currentUser.ownedBackgrounds.push(bgId);
-      currentUser.currentBg = bgId;
+      const randomBg = availableBgs[Math.floor(Math.random() * availableBgs.length)];
+      currentUser.currentBg = randomBg.class;
       
-      messageDiv.textContent = `✅ Куплен фон: ${BACKGROUNDS[bgId].name}!`;
+      messageDiv.textContent = `🎲 Новый фон: ${randomBg.name}!`;
       refreshUI();
       saveCurrentUser();
     }
@@ -799,30 +801,57 @@
     function handleTap(event) {
       if (!currentUser) return;
       
-      const earned = getCurrentTapPower();
+      let earned = getCurrentTapPower();
+      const isCrit = Math.random() * 100 < getCritChance();
+      
+      if (isCrit) {
+        earned *= 2;
+      }
+      
       currentUser.balance += earned;
       
       let x = event.clientX || window.innerWidth / 2;
       let y = event.clientY || window.innerHeight / 2;
-      showFloatingNumber(x, y, earned);
+      showFloatingNumber(x, y, earned, isCrit);
       
       refreshUI();
       saveCurrentUser();
-      messageDiv.textContent = `+${earned.toFixed(1)} EnFT`;
+      
+      if (isCrit) {
+        messageDiv.textContent = `💥 КРИТ! +${earned.toFixed(1)} EnFT`;
+      } else {
+        messageDiv.textContent = `+${earned.toFixed(1)} EnFT`;
+      }
+    }
+
+    // Переключение режима регистрация/вход
+    function toggleAuthMode() {
+      isLoginMode = !isLoginMode;
+      if (isLoginMode) {
+        authTitle.textContent = 'Вход в аккаунт';
+        registerBtn.textContent = 'ВОЙТИ';
+        toggleAuth.textContent = 'Нет аккаунта? Зарегистрироваться';
+      } else {
+        authTitle.textContent = 'Регистрация';
+        registerBtn.textContent = 'ЗАРЕГИСТРИРОВАТЬСЯ';
+        toggleAuth.textContent = 'Уже есть аккаунт? Войти';
+      }
     }
 
     // Инициализация
     function init() {
       // Обработчики регистрации
-      registerBtn.addEventListener('click', () => {
-        registerUser(usernameInput.value.trim());
-      });
+      registerBtn.addEventListener('click', register);
       
       usernameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          registerUser(usernameInput.value.trim());
-        }
+        if (e.key === 'Enter') register();
       });
+      
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') register();
+      });
+      
+      toggleAuth.addEventListener('click', toggleAuthMode);
       
       // Выход
       logoutBtn.addEventListener('click', logout);
@@ -832,21 +861,10 @@
       
       // Улучшения
       buyPunchBtn.addEventListener('click', buyPunchUpgrade);
-      buyComboBtn.addEventListener('click', buyComboUpgrade);
+      buyCritBtn.addEventListener('click', buyCritUpgrade);
       
-      // Магазин фонов
-      document.querySelectorAll('[data-bg]').forEach(card => {
-        card.addEventListener('click', () => {
-          buyBackground(card.dataset.bg);
-        });
-      });
-      
-      // Проверяем, был ли залогинен пользователь (можно добавить авто-вход последнего)
-      const allUsers = loadAllUsers();
-      const users = Object.keys(allUsers);
-      if (users.length > 0) {
-        // Можно показать последнего, но оставим ручной вход
-      }
+      // Рандомный фон
+      randomBgBtn.addEventListener('click', buyRandomBackground);
     }
 
     init();
