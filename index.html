@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>EnFT Tap · Хардкорный мемкоин</title>
   
-  <!-- Подключаем шрифты -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;700;900&family=Montserrat:wght@400;600;800&family=Play:wght@400;700&family=Press+Start+2P&family=Russo+One&display=swap" rel="stylesheet">
   
   <style>
@@ -29,7 +28,6 @@
       position: relative;
     }
 
-    /* Неоновая рамка body */
     body::before {
       content: '';
       position: fixed;
@@ -45,7 +43,6 @@
       z-index: 1;
     }
 
-    /* Фоны */
     body.bg-default { background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%); }
     body.bg-default::before { border-color: #ff8c00; box-shadow: 0 0 30px #ff8c00, inset 0 0 30px #ff8c0040; }
     
@@ -64,7 +61,6 @@
     body.bg-ocean { background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%); }
     body.bg-ocean::before { border-color: #1e90ff; box-shadow: 0 0 30px #1e90ff, inset 0 0 30px #1e90ff40; }
 
-    /* Шрифты */
     body.font-inter { font-family: 'Inter', sans-serif; }
     body.font-roboto { font-family: 'Roboto', sans-serif; }
     body.font-montserrat { font-family: 'Montserrat', sans-serif; }
@@ -93,7 +89,6 @@
     body.bg-sunset .game-container { border-color: #ff4500; box-shadow: 0 20px 40px #000, 0 0 20px #ff450040; }
     body.bg-ocean .game-container { border-color: #1e90ff; box-shadow: 0 20px 40px #000, 0 0 20px #1e90ff40; }
 
-    /* Вкладки */
     .tabs {
       display: flex;
       gap: 10px;
@@ -132,7 +127,6 @@
     body.bg-sunset .tab.active { background: #ff4500; }
     body.bg-ocean .tab.active { background: #1e90ff; }
 
-    /* Экраны */
     .screen {
       display: none;
     }
@@ -141,7 +135,6 @@
       display: block;
     }
 
-    /* Профиль */
     .profile-section {
       display: flex;
       align-items: center;
@@ -179,23 +172,11 @@
       color: #0a0a0f;
     }
 
-    body.bg-neon .profile-avatar { background: linear-gradient(135deg, #00ffff, #00cccc); }
-    body.bg-gold .profile-avatar { background: linear-gradient(135deg, #ffd700, #ffaa00); }
-    body.bg-matrix .profile-avatar { background: linear-gradient(135deg, #00ff00, #00cc00); }
-    body.bg-sunset .profile-avatar { background: linear-gradient(135deg, #ff4500, #cc3300); }
-    body.bg-ocean .profile-avatar { background: linear-gradient(135deg, #1e90ff, #0066cc); }
-
     .profile-name {
       font-size: 16px;
       font-weight: 600;
       color: #ffdca8;
     }
-
-    body.bg-neon .profile-name { color: #aaffff; }
-    body.bg-gold .profile-name { color: #ffeaa8; }
-    body.bg-matrix .profile-name { color: #aaffaa; }
-    body.bg-sunset .profile-name { color: #ffccaa; }
-    body.bg-ocean .profile-name { color: #aaccff; }
 
     .logout-btn {
       background: none;
@@ -207,13 +188,7 @@
     }
 
     body.bg-default .logout-btn { border-color: #ff8c0080; color: #b89b72; }
-    body.bg-neon .logout-btn { border-color: #00ffff80; color: #88aaaa; }
-    body.bg-gold .logout-btn { border-color: #ffd70080; color: #ccaa66; }
-    body.bg-matrix .logout-btn { border-color: #00ff0080; color: #88aa88; }
-    body.bg-sunset .logout-btn { border-color: #ff450080; color: #cc8877; }
-    body.bg-ocean .logout-btn { border-color: #1e90ff80; color: #8899cc; }
 
-    /* Баланс */
     .balance-section {
       text-align: center;
       margin-bottom: 15px;
@@ -227,11 +202,6 @@
     }
 
     body.bg-default .balance-label { color: #cc9f5f; }
-    body.bg-neon .balance-label { color: #88cccc; }
-    body.bg-gold .balance-label { color: #ddbb66; }
-    body.bg-matrix .balance-label { color: #88cc88; }
-    body.bg-sunset .balance-label { color: #cc9988; }
-    body.bg-ocean .balance-label { color: #8899dd; }
 
     .balance-value {
       font-size: 56px;
@@ -240,13 +210,7 @@
     }
 
     body.bg-default .balance-value { color: #ffd28f; text-shadow: 0 0 30px #ff8c00; }
-    body.bg-neon .balance-value { color: #aaffff; text-shadow: 0 0 30px #00ffff; }
-    body.bg-gold .balance-value { color: #ffeeaa; text-shadow: 0 0 30px #ffd700; }
-    body.bg-matrix .balance-value { color: #aaffaa; text-shadow: 0 0 30px #00ff00; }
-    body.bg-sunset .balance-value { color: #ffccbb; text-shadow: 0 0 30px #ff4500; }
-    body.bg-ocean .balance-value { color: #bbddff; text-shadow: 0 0 30px #1e90ff; }
 
-    /* Статы */
     .stats-row {
       display: flex;
       justify-content: space-around;
@@ -258,11 +222,6 @@
     }
 
     body.bg-default .stats-row { border-color: #ff8c0050; }
-    body.bg-neon .stats-row { border-color: #00ffff50; }
-    body.bg-gold .stats-row { border-color: #ffd70050; }
-    body.bg-matrix .stats-row { border-color: #00ff0050; }
-    body.bg-sunset .stats-row { border-color: #ff450050; }
-    body.bg-ocean .stats-row { border-color: #1e90ff50; }
 
     .stat-item {
       text-align: center;
@@ -274,11 +233,6 @@
     }
 
     body.bg-default .stat-label { color: #b89b72; }
-    body.bg-neon .stat-label { color: #88bbbb; }
-    body.bg-gold .stat-label { color: #ccaa77; }
-    body.bg-matrix .stat-label { color: #88bb88; }
-    body.bg-sunset .stat-label { color: #bb9988; }
-    body.bg-ocean .stat-label { color: #88aacc; }
 
     .stat-value {
       font-size: 24px;
@@ -286,13 +240,7 @@
     }
 
     body.bg-default .stat-value { color: #ffd7a0; }
-    body.bg-neon .stat-value { color: #aaffff; }
-    body.bg-gold .stat-value { color: #ffdd99; }
-    body.bg-matrix .stat-value { color: #aaffaa; }
-    body.bg-sunset .stat-value { color: #ffbbaa; }
-    body.bg-ocean .stat-value { color: #aaccff; }
 
-    /* Кнопка тапа */
     .tap-area {
       display: flex;
       justify-content: center;
@@ -308,11 +256,6 @@
     }
 
     body.bg-default .coin-button { filter: drop-shadow(0 0 20px #ff8c00); }
-    body.bg-neon .coin-button { filter: drop-shadow(0 0 20px #00ffff); }
-    body.bg-gold .coin-button { filter: drop-shadow(0 0 20px #ffd700); }
-    body.bg-matrix .coin-button { filter: drop-shadow(0 0 20px #00ff00); }
-    body.bg-sunset .coin-button { filter: drop-shadow(0 0 20px #ff4500); }
-    body.bg-ocean .coin-button { filter: drop-shadow(0 0 20px #1e90ff); }
 
     .coin-button:active {
       transform: scale(0.9);
@@ -335,36 +278,6 @@
       box-shadow: 0 0 40px #ff8c00, inset 0 -5px 10px #00000080, inset 0 5px 10px #fff3cf;
     }
 
-    body.bg-neon .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #aaffff, #00aaaa 70%, #005555);
-      border-color: #88ffff;
-      box-shadow: 0 0 40px #00ffff, inset 0 -5px 10px #00000080, inset 0 5px 10px #aaffff;
-    }
-
-    body.bg-gold .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #ffffaa, #cc9900 70%, #664d00);
-      border-color: #ffdd88;
-      box-shadow: 0 0 40px #ffd700, inset 0 -5px 10px #00000080, inset 0 5px 10px #ffffaa;
-    }
-
-    body.bg-matrix .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #aaffaa, #00aa00 70%, #005500);
-      border-color: #88ff88;
-      box-shadow: 0 0 40px #00ff00, inset 0 -5px 10px #00000080, inset 0 5px 10px #aaffaa;
-    }
-
-    body.bg-sunset .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #ffccbb, #cc4400 70%, #662200);
-      border-color: #ff9988;
-      box-shadow: 0 0 40px #ff4500, inset 0 -5px 10px #00000080, inset 0 5px 10px #ffccbb;
-    }
-
-    body.bg-ocean .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #bbddff, #0066cc 70%, #003366);
-      border-color: #88bbff;
-      box-shadow: 0 0 40px #1e90ff, inset 0 -5px 10px #00000080, inset 0 5px 10px #bbddff;
-    }
-
     .coin-gfx.crit {
       background: radial-gradient(circle at 30% 25%, #ff4444, #cc0000 70%, #660000) !important;
       box-shadow: 0 0 60px #ff0000, inset 0 -5px 10px #00000080 !important;
@@ -378,7 +291,6 @@
       text-shadow: 2px 3px 0 #ffd58c;
     }
 
-    /* Карточки апгрейдов */
     .upgrade-card {
       background: #120e18;
       border: 1px solid;
@@ -388,11 +300,6 @@
     }
 
     body.bg-default .upgrade-card { border-color: #ff8c0060; }
-    body.bg-neon .upgrade-card { border-color: #00ffff60; }
-    body.bg-gold .upgrade-card { border-color: #ffd70060; }
-    body.bg-matrix .upgrade-card { border-color: #00ff0060; }
-    body.bg-sunset .upgrade-card { border-color: #ff450060; }
-    body.bg-ocean .upgrade-card { border-color: #1e90ff60; }
 
     .upgrade-header {
       display: flex;
@@ -406,23 +313,12 @@
     }
 
     body.bg-default .upgrade-title { color: #ffc978; }
-    body.bg-neon .upgrade-title { color: #aaffff; }
-    body.bg-gold .upgrade-title { color: #ffdd88; }
-    body.bg-matrix .upgrade-title { color: #aaffaa; }
-    body.bg-sunset .upgrade-title { color: #ffbb99; }
-    body.bg-ocean .upgrade-title { color: #aaccff; }
 
     .upgrade-cost {
       font-size: 20px;
       font-weight: 800;
       color: #ffaa00;
     }
-
-    body.bg-neon .upgrade-cost { color: #00ffff; }
-    body.bg-gold .upgrade-cost { color: #ffd700; }
-    body.bg-matrix .upgrade-cost { color: #00ff00; }
-    body.bg-sunset .upgrade-cost { color: #ff4500; }
-    body.bg-ocean .upgrade-cost { color: #1e90ff; }
 
     .upgrade-desc {
       margin-bottom: 15px;
@@ -433,11 +329,6 @@
     }
 
     body.bg-default .upgrade-desc { color: #b8a58b; }
-    body.bg-neon .upgrade-desc { color: #88bbbb; }
-    body.bg-gold .upgrade-desc { color: #ccbb99; }
-    body.bg-matrix .upgrade-desc { color: #88bb88; }
-    body.bg-sunset .upgrade-desc { color: #bbaa99; }
-    body.bg-ocean .upgrade-desc { color: #99aacc; }
 
     .level-badge {
       background: #2a1f12;
@@ -447,11 +338,6 @@
     }
 
     body.bg-default .level-badge { color: #ffc978; }
-    body.bg-neon .level-badge { color: #aaffff; }
-    body.bg-gold .level-badge { color: #ffdd88; }
-    body.bg-matrix .level-badge { color: #aaffaa; }
-    body.bg-sunset .level-badge { color: #ffbb99; }
-    body.bg-ocean .level-badge { color: #aaccff; }
 
     .buy-btn {
       width: 100%;
@@ -468,11 +354,6 @@
     }
 
     body.bg-default .buy-btn { border-color: #ff8c00; color: #ffdca8; }
-    body.bg-neon .buy-btn { border-color: #00ffff; color: #aaffff; }
-    body.bg-gold .buy-btn { border-color: #ffd700; color: #ffdd88; }
-    body.bg-matrix .buy-btn { border-color: #00ff00; color: #aaffaa; }
-    body.bg-sunset .buy-btn { border-color: #ff4500; color: #ffbb99; }
-    body.bg-ocean .buy-btn { border-color: #1e90ff; color: #aaccff; }
 
     .buy-btn:active {
       transform: translateY(2px);
@@ -483,7 +364,43 @@
       pointer-events: none;
     }
 
-    /* Рандомный фон и шрифт */
+    .daily-bonus-card {
+      background: linear-gradient(135deg, #2a1f12, #1a1425);
+      border: 1px solid #ffaa00;
+      border-radius: 30px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .daily-title {
+      color: #ffc978;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .daily-timer {
+      color: #b89b72;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .daily-btn {
+      background: linear-gradient(135deg, #ff8c00, #ffaa33);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 30px;
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .daily-btn.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
     .customization-section {
       margin-top: 20px;
       padding-top: 15px;
@@ -491,11 +408,6 @@
     }
 
     body.bg-default .customization-section { border-color: #ff8c0030; }
-    body.bg-neon .customization-section { border-color: #00ffff30; }
-    body.bg-gold .customization-section { border-color: #ffd70030; }
-    body.bg-matrix .customization-section { border-color: #00ff0030; }
-    body.bg-sunset .customization-section { border-color: #ff450030; }
-    body.bg-ocean .customization-section { border-color: #1e90ff30; }
 
     .customization-title {
       font-size: 18px;
@@ -504,11 +416,6 @@
     }
 
     body.bg-default .customization-title { color: #ffc978; }
-    body.bg-neon .customization-title { color: #aaffff; }
-    body.bg-gold .customization-title { color: #ffdd88; }
-    body.bg-matrix .customization-title { color: #aaffaa; }
-    body.bg-sunset .customization-title { color: #ffbb99; }
-    body.bg-ocean .customization-title { color: #aaccff; }
 
     .customization-buttons {
       display: grid;
@@ -535,13 +442,7 @@
     }
 
     body.bg-default .current-info { color: #b89b72; }
-    body.bg-neon .current-info { color: #88bbbb; }
-    body.bg-gold .current-info { color: #ccbb99; }
-    body.bg-matrix .current-info { color: #88bb88; }
-    body.bg-sunset .current-info { color: #bbaa99; }
-    body.bg-ocean .current-info { color: #99aacc; }
 
-    /* Копирайт */
     .copyright {
       text-align: center;
       margin-top: 20px;
@@ -552,13 +453,7 @@
     }
 
     body.bg-default .copyright { border-color: #ff8c0030; color: #b89b72; }
-    body.bg-neon .copyright { border-color: #00ffff30; color: #88bbbb; }
-    body.bg-gold .copyright { border-color: #ffd70030; color: #ccbb99; }
-    body.bg-matrix .copyright { border-color: #00ff0030; color: #88bb88; }
-    body.bg-sunset .copyright { border-color: #ff450030; color: #bbaa99; }
-    body.bg-ocean .copyright { border-color: #1e90ff30; color: #99aacc; }
 
-    /* Регистрация */
     .register-screen {
       text-align: center;
       padding: 20px 10px;
@@ -613,14 +508,77 @@
       margin-top: 10px;
     }
 
-    /* Адаптив */
-    @media (max-width: 400px) {
-      .coin-gfx { width: 150px; height: 150px; }
-      .coin-gfx span { font-size: 42px; }
-      .balance-value { font-size: 44px; }
+    .achievement-card {
+      background: #120e18;
+      border: 1px solid #ff8c0060;
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Всплывашки */
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-name {
+      color: #ffc978;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .achievement-desc {
+      color: #b8a58b;
+      font-size: 12px;
+    }
+
+    .achievement-status {
+      color: #00ff88;
+      font-size: 20px;
+    }
+
+    .achievement-locked {
+      color: #6a5a47;
+    }
+
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 15px;
+      background: #120e18;
+      border: 1px solid #ff8c0050;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .leaderboard-rank {
+      color: #ffaa00;
+      font-weight: 700;
+      width: 50px;
+    }
+
+    .leaderboard-name {
+      color: #ffdca8;
+      flex: 1;
+    }
+
+    .leaderboard-balance {
+      color: #00ff88;
+      font-weight: 700;
+    }
+
+    .top-badge {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+      color: #000;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: 5px;
+    }
+
     .floating-number {
       position: fixed;
       font-weight: 900;
@@ -631,11 +589,6 @@
     }
 
     body.bg-default .floating-number { color: #ffd28f; text-shadow: 0 0 20px #ff8c00, 0 2px 4px #000; }
-    body.bg-neon .floating-number { color: #aaffff; text-shadow: 0 0 20px #00ffff, 0 2px 4px #000; }
-    body.bg-gold .floating-number { color: #ffeeaa; text-shadow: 0 0 20px #ffd700, 0 2px 4px #000; }
-    body.bg-matrix .floating-number { color: #aaffaa; text-shadow: 0 0 20px #00ff00, 0 2px 4px #000; }
-    body.bg-sunset .floating-number { color: #ffccbb; text-shadow: 0 0 20px #ff4500, 0 2px 4px #000; }
-    body.bg-ocean .floating-number { color: #bbddff; text-shadow: 0 0 20px #1e90ff, 0 2px 4px #000; }
 
     .floating-number.crit {
       color: #ff4444 !important;
@@ -647,6 +600,12 @@
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-100px); }
     }
+
+    @media (max-width: 400px) {
+      .coin-gfx { width: 150px; height: 150px; }
+      .coin-gfx span { font-size: 42px; }
+      .balance-value { font-size: 44px; }
+    }
   </style>
 </head>
 <body class="bg-default font-inter">
@@ -654,9 +613,9 @@
   <!-- Экран регистрации -->
   <div id="registerScreen" class="register-screen">
     <div class="register-title">🚀 EnFT Tap</div>
-    <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20">
+    <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20" autocomplete="off">
     <div class="password-wrapper">
-      <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30">
+      <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30" autocomplete="off">
       <span class="toggle-password" id="togglePassword">👁️</span>
     </div>
     <button id="registerBtn" class="register-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
@@ -672,14 +631,12 @@
       <button class="logout-btn" id="logoutBtn">Выйти</button>
     </div>
 
-    <!-- Вкладки -->
     <div class="tabs">
       <div class="tab active" data-tab="game">Игра</div>
       <div class="tab" data-tab="achievements">Достижения</div>
       <div class="tab" data-tab="leaderboard">Топ</div>
     </div>
 
-    <!-- Вкладка Игра -->
     <div id="gameScreen" class="screen active">
       <div class="balance-section">
         <div class="balance-label">БАЛАНС EnFT</div>
@@ -688,8 +645,7 @@
         </div>
       </div>
 
-      <!-- Ежедневный бонус -->
-      <div class="daily-bonus-card" id="dailyBonusCard">
+      <div class="daily-bonus-card">
         <div class="daily-title">🎁 ЕЖЕДНЕВНЫЙ БОНУС</div>
         <div class="daily-timer" id="dailyTimer">+50 EnFT доступно!</div>
         <button class="daily-btn" id="dailyBonusBtn">ЗАБРАТЬ</button>
@@ -709,3 +665,477 @@
       <div class="tap-area">
         <button class="coin-button" id="tapButton">
           <div class="coin-gfx" id="coinGfx">
+            <span>EnFT</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">💪 УЛУЧШИТЬ УДАР</span>
+          <span class="upgrade-cost" id="punchCostDisplay">50</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+0.5 EnFT за клик</span>
+          <span class="level-badge" id="punchLevelDisplay">УР. 0</span>
+        </div>
+        <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
+      </div>
+
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ ШАНС</span>
+          <span class="upgrade-cost" id="critCostDisplay">100</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+2% шанс крита (макс 50%)</span>
+          <span class="level-badge" id="critLevelDisplay">УР. 0</span>
+        </div>
+        <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
+      </div>
+
+      <div class="customization-section">
+        <div class="customization-title">🎨 КАСТОМИЗАЦИЯ</div>
+        <div class="customization-buttons">
+          <button class="custom-btn" id="randomBgBtn">🎲 ФОН (50)</button>
+          <button class="custom-btn" id="randomFontBtn">🔤 ШРИФТ (30)</button>
+        </div>
+        <div class="current-info">
+          <span id="currentBgName">Стандарт</span> · 
+          <span id="currentFontName">Inter</span>
+        </div>
+      </div>
+
+      <div id="messageArea" class="status-message" style="text-align: center; margin-top: 15px; color: #eebb77;"></div>
+    </div>
+
+    <div id="achievementsScreen" class="screen">
+      <div id="achievementsList"></div>
+    </div>
+
+    <div id="leaderboardScreen" class="screen">
+      <div id="leaderboardList"></div>
+    </div>
+
+    <div class="copyright">Enight — Машенькин Евгений креатор</div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+
+    // Звуки (заглушки)
+    const sounds = {
+      tap: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
+      crit: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
+      buy: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38=')
+    };
+    
+    let soundsEnabled = false;
+    
+    function enableSounds() {
+      soundsEnabled = true;
+    }
+    
+    function playSound(name) {
+      if (!soundsEnabled) return;
+      sounds[name]?.play().catch(() => {});
+    }
+
+    // Состояние
+    let currentUser = null;
+    
+    const PUNCH_BASE = 50;
+    const PUNCH_MULT = 1.4;
+    const PUNCH_BONUS = 0.5;
+    
+    const CRIT_BASE = 100;
+    const CRIT_MULT = 1.5;
+    const CRIT_BONUS = 2;
+    const MAX_CRIT = 50;
+    
+    const BG_COST = 50;
+    const FONT_COST = 30;
+    
+    const BACKGROUNDS = ['bg-default', 'bg-neon', 'bg-gold', 'bg-matrix', 'bg-sunset', 'bg-ocean'];
+    const BG_NAMES = ['Стандарт', 'Неон', 'Золото', 'Матрица', 'Закат', 'Океан'];
+    
+    const FONTS = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo'];
+    const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One'];
+
+    const ACHIEVEMENTS = [
+      { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10 },
+      { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50 },
+      { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30 },
+      { id: 'bg_5', name: 'Дизайнер', desc: '5 смен фона', reward: 100 }
+    ];
+
+    // UI
+    const registerScreen = document.getElementById('registerScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const usernameInput = document.getElementById('usernameInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const registerBtn = document.getElementById('registerBtn');
+    const togglePassword = document.getElementById('togglePassword');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileName = document.getElementById('profileName');
+    const balanceSpan = document.getElementById('balanceDisplay');
+    const tapPowerSpan = document.getElementById('tapPowerDisplay');
+    const critChanceDisplay = document.getElementById('critChanceDisplay');
+    const punchCostSpan = document.getElementById('punchCostDisplay');
+    const critCostSpan = document.getElementById('critCostDisplay');
+    const punchLevelSpan = document.getElementById('punchLevelDisplay');
+    const critLevelSpan = document.getElementById('critLevelDisplay');
+    const currentBgName = document.getElementById('currentBgName');
+    const currentFontName = document.getElementById('currentFontName');
+    const messageDiv = document.getElementById('messageArea');
+    const coinGfx = document.getElementById('coinGfx');
+    const dailyTimer = document.getElementById('dailyTimer');
+    const dailyBonusBtn = document.getElementById('dailyBonusBtn');
+
+    // Вкладки
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + 'Screen').classList.add('active');
+        if (tab.dataset.tab === 'achievements') updateAchievements();
+        if (tab.dataset.tab === 'leaderboard') updateLeaderboard();
+      });
+    });
+
+    // Показать пароль
+    togglePassword.addEventListener('click', function() {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      this.textContent = passwordInput.type === 'password' ? '👁️' : '🔒';
+    });
+
+    // Функции
+    function getTapPower() {
+      return 1.0 + (currentUser?.punchLevel || 0) * PUNCH_BONUS;
+    }
+
+    function getCritChance() {
+      return Math.min((currentUser?.critLevel || 0) * CRIT_BONUS, MAX_CRIT);
+    }
+
+    function getPunchCost() {
+      return Math.floor(PUNCH_BASE * Math.pow(PUNCH_MULT, currentUser?.punchLevel || 0));
+    }
+
+    function getCritCost() {
+      return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.critLevel || 0));
+    }
+
+    function saveAllUsers(users) {
+      localStorage.setItem('enft_users_final', JSON.stringify(users));
+    }
+
+    function loadAllUsers() {
+      return JSON.parse(localStorage.getItem('enft_users_final') || '{}');
+    }
+
+    function saveCurrentUser() {
+      if (!currentUser) return;
+      const users = loadAllUsers();
+      users[currentUser.name] = currentUser;
+      saveAllUsers(users);
+      localStorage.setItem('enft_last_user', currentUser.name);
+    }
+
+    function getPlayerRank() {
+      const users = loadAllUsers();
+      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance);
+      const index = sorted.findIndex(u => u.name === currentUser.name);
+      return { rank: index + 1, total: sorted.length };
+    }
+
+    function getDailyBonusAmount() {
+      const rank = getPlayerRank().rank;
+      if (rank <= 5) return 150;  // ТОП-5: x3
+      if (rank <= 10) return 100; // ТОП-10: x2
+      return 50;                   // Обычный
+    }
+
+    function refreshUI() {
+      if (!currentUser) return;
+      
+      balanceSpan.textContent = currentUser.balance.toFixed(1);
+      tapPowerSpan.textContent = getTapPower().toFixed(1);
+      critChanceDisplay.textContent = getCritChance() + '%';
+      
+      const punchCost = getPunchCost();
+      punchCostSpan.textContent = punchCost;
+      punchLevelSpan.textContent = `УР. ${currentUser.punchLevel}`;
+      document.getElementById('buyPunchBtn').classList.toggle('disabled', currentUser.balance < punchCost);
+      
+      const critCost = getCritCost();
+      critCostSpan.textContent = critCost;
+      critLevelSpan.textContent = `УР. ${currentUser.critLevel}`;
+      document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < critCost || getCritChance() >= MAX_CRIT);
+      
+      profileName.textContent = currentUser.name;
+      profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+      
+      // Применяем стили
+      document.body.className = `${currentUser.currentBg || 'bg-default'} ${currentUser.currentFont || 'font-inter'}`;
+      
+      const bgIndex = BACKGROUNDS.indexOf(currentUser.currentBg);
+      currentBgName.textContent = bgIndex >= 0 ? BG_NAMES[bgIndex] : 'Стандарт';
+      
+      const fontIndex = FONTS.indexOf(currentUser.currentFont);
+      currentFontName.textContent = fontIndex >= 0 ? FONT_NAMES[fontIndex] : 'Inter';
+      
+      updateDailyBonus();
+    }
+
+    function updateDailyBonus() {
+      if (!currentUser) return;
+      
+      const now = Date.now();
+      const last = currentUser.lastDailyClaim || 0;
+      const cooldown = 24 * 60 * 60 * 1000;
+      const left = last + cooldown - now;
+      
+      const bonusAmount = getDailyBonusAmount();
+      const rank = getPlayerRank().rank;
+      let multiplier = '';
+      if (rank <= 5) multiplier = ' (ТОП-5 x3!)';
+      else if (rank <= 10) multiplier = ' (ТОП-10 x2!)';
+      
+      if (left <= 0) {
+        dailyTimer.textContent = `+${bonusAmount} EnFT доступно!${multiplier}`;
+        dailyBonusBtn.classList.remove('disabled');
+      } else {
+        const h = Math.floor(left / 3600000);
+        const m = Math.floor((left % 3600000) / 60000);
+        dailyTimer.textContent = `Через ${h}ч ${m}м (бонус: ${bonusAmount}${multiplier})`;
+        dailyBonusBtn.classList.add('disabled');
+      }
+    }
+
+    function claimDaily() {
+      if (!currentUser) return;
+      
+      const now = Date.now();
+      if (now - (currentUser.lastDailyClaim || 0) < 24 * 60 * 60 * 1000) return;
+      
+      const bonus = getDailyBonusAmount();
+      currentUser.balance += bonus;
+      currentUser.lastDailyClaim = now;
+      
+      messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`;
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    }
+
+    function updateAchievements() {
+      const list = document.getElementById('achievementsList');
+      list.innerHTML = '';
+      
+      ACHIEVEMENTS.forEach(ach => {
+        let completed = false;
+        if (ach.id === 'taps_100') completed = (currentUser.totalTaps || 0) >= 100;
+        else if (ach.id === 'taps_1000') completed = (currentUser.totalTaps || 0) >= 1000;
+        else if (ach.id === 'crit_10') completed = (currentUser.totalCrits || 0) >= 10;
+        else if (ach.id === 'bg_5') completed = (currentUser.bgPurchases || 0) >= 5;
+        
+        if (completed && !currentUser.achievements?.includes(ach.id)) {
+          if (!currentUser.achievements) currentUser.achievements = [];
+          currentUser.achievements.push(ach.id);
+          currentUser.balance += ach.reward;
+          messageDiv.textContent = `🏆 ${ach.name}! +${ach.reward}`;
+          saveCurrentUser();
+        }
+        
+        const isDone = currentUser.achievements?.includes(ach.id) || completed;
+        const card = document.createElement('div');
+        card.className = 'achievement-card';
+        card.innerHTML = `
+          <div class="achievement-info">
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-desc">${ach.desc} · +${ach.reward} EnFT</div>
+          </div>
+          <div class="achievement-status ${isDone ? '' : 'achievement-locked'}">${isDone ? '✓' : '🔒'}</div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function updateLeaderboard() {
+      const users = loadAllUsers();
+      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance);
+      
+      const list = document.getElementById('leaderboardList');
+      list.innerHTML = '';
+      
+      sorted.slice(0, 10).forEach((user, i) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        const rank = i + 1;
+        let badge = '';
+        if (rank <= 5) badge = '<span class="top-badge">x3 БОНУС</span>';
+        else if (rank <= 10) badge = '<span class="top-badge">x2 БОНУС</span>';
+        
+        item.innerHTML = `
+          <span class="leaderboard-rank">#${rank}</span>
+          <span class="leaderboard-name">${user.name} ${badge}</span>
+          <span class="leaderboard-balance">${(user.balance || 0).toFixed(1)} ⚡</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function register() {
+      const name = usernameInput.value.trim();
+      const pass = passwordInput.value;
+      
+      if (!name || !pass) {
+        alert('Введи ник и пароль!');
+        return;
+      }
+      
+      const users = loadAllUsers();
+      
+      if (users[name]) {
+        if (users[name].password !== pass) {
+          alert('Неверный пароль!');
+          return;
+        }
+        currentUser = users[name];
+      } else {
+        currentUser = {
+          name, password: pass,
+          balance: 0, punchLevel: 0, critLevel: 0,
+          currentBg: 'bg-default', currentFont: 'font-inter',
+          totalTaps: 0, totalCrits: 0, bgPurchases: 0,
+          achievements: [], lastDailyClaim: 0
+        };
+        users[name] = currentUser;
+        saveAllUsers(users);
+      }
+      
+      localStorage.setItem('enft_last_user', name);
+      registerScreen.style.display = 'none';
+      mainScreen.style.display = 'block';
+      refreshUI();
+      enableSounds();
+    }
+
+    function logout() {
+      saveCurrentUser();
+      localStorage.removeItem('enft_last_user');
+      currentUser = null;
+      registerScreen.style.display = 'block';
+      mainScreen.style.display = 'none';
+      usernameInput.value = '';
+      passwordInput.value = '';
+    }
+
+    function handleTap(e) {
+      if (!currentUser) return;
+      
+      currentUser.totalTaps = (currentUser.totalTaps || 0) + 1;
+      let earned = getTapPower();
+      const isCrit = Math.random() * 100 < getCritChance();
+      
+      if (isCrit) {
+        earned *= 2;
+        currentUser.totalCrits = (currentUser.totalCrits || 0) + 1;
+        coinGfx.classList.add('crit');
+        setTimeout(() => coinGfx.classList.remove('crit'), 100);
+        playSound('crit');
+      } else {
+        playSound('tap');
+      }
+      
+      currentUser.balance += earned;
+      
+      const float = document.createElement('div');
+      float.className = `floating-number${isCrit ? ' crit' : ''}`;
+      float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`;
+      float.style.left = (e.clientX - 20) + 'px';
+      float.style.top = (e.clientY - 30) + 'px';
+      document.body.appendChild(float);
+      setTimeout(() => float.remove(), 800);
+      
+      refreshUI();
+      saveCurrentUser();
+      messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`;
+    }
+
+    // Инициализация
+    registerBtn.addEventListener('click', register);
+    logoutBtn.addEventListener('click', logout);
+    document.getElementById('tapButton').addEventListener('click', handleTap);
+    
+    document.getElementById('buyPunchBtn').addEventListener('click', () => {
+      if (!currentUser) return;
+      const cost = getPunchCost();
+      if (currentUser.balance < cost) return;
+      currentUser.balance -= cost;
+      currentUser.punchLevel++;
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    });
+    
+    document.getElementById('buyCritBtn').addEventListener('click', () => {
+      if (!currentUser) return;
+      if (getCritChance() >= MAX_CRIT) return;
+      const cost = getCritCost();
+      if (currentUser.balance < cost) return;
+      currentUser.balance -= cost;
+      currentUser.critLevel++;
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    });
+    
+    document.getElementById('randomBgBtn').addEventListener('click', () => {
+      if (!currentUser || currentUser.balance < BG_COST) return;
+      currentUser.balance -= BG_COST;
+      currentUser.bgPurchases = (currentUser.bgPurchases || 0) + 1;
+      const available = BACKGROUNDS.filter(b => b !== currentUser.currentBg);
+      currentUser.currentBg = available[Math.floor(Math.random() * available.length)];
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    });
+    
+    document.getElementById('randomFontBtn').addEventListener('click', () => {
+      if (!currentUser || currentUser.balance < FONT_COST) return;
+      currentUser.balance -= FONT_COST;
+      const available = FONTS.filter(f => f !== currentUser.currentFont);
+      currentUser.currentFont = available[Math.floor(Math.random() * available.length)];
+      playSound('buy');
+      refreshUI();
+      saveCurrentUser();
+    });
+    
+    dailyBonusBtn.addEventListener('click', claimDaily);
+    
+    usernameInput.addEventListener('keypress', e => { if (e.key === 'Enter') register(); });
+    passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') register(); });
+    
+    // Авто-вход
+    const lastUser = localStorage.getItem('enft_last_user');
+    if (lastUser) {
+      const users = loadAllUsers();
+      if (users[lastUser]) {
+        currentUser = users[lastUser];
+        registerScreen.style.display = 'none';
+        mainScreen.style.display = 'block';
+        refreshUI();
+      }
+    }
+    
+    setInterval(() => { if (currentUser) updateDailyBonus(); }, 1000);
+  })();
+</script>
+</body>
+</html>
