@@ -3,604 +3,213 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>EnFT Tap · Хардкорный мемкоин</title>
+  <title>EnFT Tap · ОНЛАЙН</title>
   
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;700;900&family=Montserrat:wght@400;600;800&family=Play:wght@400;700&family=Press+Start+2P&family=Russo+One&display=swap" rel="stylesheet">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       min-height: 100vh;
-      background: #0a0a0f;
-      background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%);
-      background-attachment: fixed;
+      background: radial-gradient(circle at 30% 20%, #1a1425, #030205);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      transition: background-image 0.3s ease;
       font-family: 'Inter', sans-serif;
-      position: relative;
+      transition: background 0.3s;
     }
-
-    body::before {
-      content: '';
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      border: 2px solid #ff8c00;
-      border-radius: 50px;
-      pointer-events: none;
-      box-shadow: 0 0 30px #ff8c00, inset 0 0 30px #ff8c0040;
-      transition: all 0.3s ease;
-      z-index: 1;
-    }
-
-    body.bg-default { background-image: radial-gradient(circle at 30% 20%, #1a1425 0%, #030205 100%); }
-    body.bg-default::before { border-color: #ff8c00; box-shadow: 0 0 30px #ff8c00, inset 0 0 30px #ff8c0040; }
-    
-    body.bg-neon { background-image: linear-gradient(135deg, #0a0a2e 0%, #1a0a2e 50%, #0a1a2e 100%); }
-    body.bg-neon::before { border-color: #00ffff; box-shadow: 0 0 30px #00ffff, inset 0 0 30px #00ffff40; }
-    
-    body.bg-gold { background-image: radial-gradient(circle at 70% 30%, #3a2a0a 0%, #0a0a05 100%); }
-    body.bg-gold::before { border-color: #ffd700; box-shadow: 0 0 30px #ffd700, inset 0 0 30px #ffd70040; }
-    
-    body.bg-matrix { background-image: linear-gradient(0deg, #0a1a0a 0%, #020302 100%); }
-    body.bg-matrix::before { border-color: #00ff00; box-shadow: 0 0 30px #00ff00, inset 0 0 30px #00ff0040; }
-    
-    body.bg-sunset { background-image: linear-gradient(45deg, #2e0a0a 0%, #2e1a0a 50%, #1a0a2e 100%); }
-    body.bg-sunset::before { border-color: #ff4500; box-shadow: 0 0 30px #ff4500, inset 0 0 30px #ff450040; }
-    
-    body.bg-ocean { background-image: linear-gradient(180deg, #0a1a2e 0%, #0a2e1a 100%); }
-    body.bg-ocean::before { border-color: #1e90ff; box-shadow: 0 0 30px #1e90ff, inset 0 0 30px #1e90ff40; }
-
+    body.bg-default { background: radial-gradient(circle at 30% 20%, #1a1425, #030205); }
+    body.bg-neon { background: linear-gradient(135deg, #0a0a2e, #1a0a2e, #0a1a2e); }
+    body.bg-gold { background: radial-gradient(circle at 70% 30%, #3a2a0a, #0a0a05); }
+    body.bg-matrix { background: linear-gradient(0deg, #0a1a0a, #020302); }
+    body.bg-sunset { background: linear-gradient(45deg, #2e0a0a, #2e1a0a, #1a0a2e); }
+    body.bg-ocean { background: linear-gradient(180deg, #0a1a2e, #0a2e1a); }
     body.font-inter { font-family: 'Inter', sans-serif; }
     body.font-roboto { font-family: 'Roboto', sans-serif; }
     body.font-montserrat { font-family: 'Montserrat', sans-serif; }
     body.font-play { font-family: 'Play', sans-serif; }
     body.font-press-start { font-family: 'Press Start 2P', cursive; }
     body.font-russo { font-family: 'Russo One', sans-serif; }
-
+    
     .game-container {
       max-width: 500px;
       width: 100%;
-      background: rgba(8, 6, 12, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid;
+      background: rgba(8,6,12,0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid #ff8c00;
       border-radius: 40px;
       padding: 24px 20px 30px;
-      box-shadow: 0 20px 40px #000;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 2;
+      box-shadow: 0 20px 40px #000, 0 0 20px #ff8c0040;
     }
-
-    body.bg-default .game-container { border-color: #ff8c00; box-shadow: 0 20px 40px #000, 0 0 20px #ff8c0040; }
-    body.bg-neon .game-container { border-color: #00ffff; box-shadow: 0 20px 40px #000, 0 0 20px #00ffff40; }
-    body.bg-gold .game-container { border-color: #ffd700; box-shadow: 0 20px 40px #000, 0 0 20px #ffd70040; }
-    body.bg-matrix .game-container { border-color: #00ff00; box-shadow: 0 20px 40px #000, 0 0 20px #00ff0040; }
-    body.bg-sunset .game-container { border-color: #ff4500; box-shadow: 0 20px 40px #000, 0 0 20px #ff450040; }
-    body.bg-ocean .game-container { border-color: #1e90ff; box-shadow: 0 20px 40px #000, 0 0 20px #1e90ff40; }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+    
+    .auth-screen { text-align: center; padding: 20px 10px; }
+    .auth-title { font-size: 28px; font-weight: 800; color: #ffd28f; text-shadow: 0 0 20px #ff8c00; margin-bottom: 10px; }
+    .auth-subtitle { color: #b89b72; font-size: 14px; margin-bottom: 30px; }
+    .auth-input {
+      width: 100%; padding: 16px 20px; background: #1a1425; border: 2px solid #ff8c00;
+      border-radius: 50px; color: #ffdca8; font-size: 18px; outline: none;
+      margin-bottom: 15px; text-align: center;
     }
-
-    .tab {
-      flex: 1;
-      padding: 10px;
-      background: #1a1425;
-      border: 1px solid;
-      border-radius: 30px;
-      color: #b89b72;
-      font-size: 14px;
-      cursor: pointer;
-      text-align: center;
-      transition: 0.2s;
+    .auth-input::placeholder { color: #8a7a5f; }
+    .auth-input.error { border-color: #ff4444; }
+    .error-message { color: #ff6b6b; font-size: 12px; margin-top: -10px; margin-bottom: 10px; display: none; }
+    .auth-btn {
+      width: 100%; padding: 16px; background: linear-gradient(135deg, #ff8c00, #ffaa33);
+      border: none; border-radius: 50px; color: #0a0a0f; font-weight: 800;
+      font-size: 18px; cursor: pointer; margin-top: 10px;
     }
-
-    body.bg-default .tab { border-color: #ff8c0050; }
-    body.bg-neon .tab { border-color: #00ffff50; color: #88ffff; }
-    body.bg-gold .tab { border-color: #ffd70050; color: #ffdca8; }
-    body.bg-matrix .tab { border-color: #00ff0050; color: #88ff88; }
-    body.bg-sunset .tab { border-color: #ff450050; color: #ffaa88; }
-    body.bg-ocean .tab { border-color: #1e90ff50; color: #88ccff; }
-
-    .tab.active {
-      background: #ff8c00;
-      color: #0a0a0f;
-      font-weight: 700;
-    }
-
-    body.bg-neon .tab.active { background: #00ffff; }
-    body.bg-gold .tab.active { background: #ffd700; }
-    body.bg-matrix .tab.active { background: #00ff00; }
-    body.bg-sunset .tab.active { background: #ff4500; }
-    body.bg-ocean .tab.active { background: #1e90ff; }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .auth-toggle { color: #b89b72; margin-top: 20px; cursor: pointer; font-size: 14px; }
+    
+    .main-screen { display: none; }
     .profile-section {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding: 10px 15px;
-      background: #1a142580;
-      border-radius: 50px;
-      border: 1px solid;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding: 10px 15px; background: #1a142580;
+      border-radius: 50px; border: 1px solid #ff8c0050;
     }
-
-    body.bg-default .profile-section { border-color: #ff8c0050; }
-    body.bg-neon .profile-section { border-color: #00ffff50; }
-    body.bg-gold .profile-section { border-color: #ffd70050; }
-    body.bg-matrix .profile-section { border-color: #00ff0050; }
-    body.bg-sunset .profile-section { border-color: #ff450050; }
-    body.bg-ocean .profile-section { border-color: #1e90ff50; }
-
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .profile-info { display: flex; align-items: center; gap: 10px; }
     .profile-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #ff8c00, #ffaa33);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 18px;
-      color: #0a0a0f;
+      width: 40px; height: 40px; background: linear-gradient(135deg, #ff8c00, #ffaa33);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px; color: #0a0a0f;
     }
-
-    .profile-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffdca8;
-    }
-
+    .profile-name { font-size: 16px; font-weight: 600; color: #ffdca8; }
     .logout-btn {
-      background: none;
-      border: 1px solid;
-      padding: 6px 15px;
-      border-radius: 30px;
-      font-size: 12px;
-      cursor: pointer;
+      background: none; border: 1px solid #ff8c0080; color: #b89b72;
+      padding: 6px 15px; border-radius: 30px; font-size: 12px; cursor: pointer;
     }
-
-    body.bg-default .logout-btn { border-color: #ff8c0080; color: #b89b72; }
-
-    .balance-section {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .balance-label {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-    }
-
-    body.bg-default .balance-label { color: #cc9f5f; }
-
-    .balance-value {
-      font-size: 56px;
-      font-weight: 800;
-      line-height: 1.2;
-    }
-
-    body.bg-default .balance-value { color: #ffd28f; text-shadow: 0 0 30px #ff8c00; }
-
+    
+    .balance-section { text-align: center; margin-bottom: 15px; }
+    .balance-label { font-size: 14px; letter-spacing: 3px; color: #cc9f5f; text-transform: uppercase; }
+    .balance-value { font-size: 56px; font-weight: 800; color: #ffd28f; text-shadow: 0 0 30px #ff8c00; }
+    
     .stats-row {
-      display: flex;
-      justify-content: space-around;
-      background: #1a1425;
-      border-radius: 50px;
-      padding: 12px;
-      margin: 20px 0;
-      border: 1px solid;
+      display: flex; justify-content: space-around; background: #1a1425;
+      border-radius: 50px; padding: 12px; margin: 20px 0; border: 1px solid #ff8c0050;
     }
-
-    body.bg-default .stats-row { border-color: #ff8c0050; }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    body.bg-default .stat-label { color: #b89b72; }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    body.bg-default .stat-value { color: #ffd7a0; }
-
-    .tap-area {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0 25px;
-    }
-
+    .stat-item { text-align: center; }
+    .stat-label { font-size: 12px; color: #b89b72; text-transform: uppercase; }
+    .stat-value { font-size: 24px; font-weight: 700; color: #ffd7a0; }
+    
+    .tap-area { display: flex; justify-content: center; margin: 20px 0 25px; }
     .coin-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.1s;
+      background: none; border: none; cursor: pointer; border-radius: 50%;
+      transition: all 0.1s; filter: drop-shadow(0 0 20px #ff8c00);
     }
-
-    body.bg-default .coin-button { filter: drop-shadow(0 0 20px #ff8c00); }
-
-    .coin-button:active {
-      transform: scale(0.9);
-    }
-
+    .coin-button:active { transform: scale(0.9); }
     .coin-gfx {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid;
-      transition: all 0.1s;
-    }
-
-    body.bg-default .coin-gfx { 
-      background: radial-gradient(circle at 30% 25%, #ffe4b5, #d4891a 70%, #7a4f0e);
-      border-color: #ffc864;
+      width: 180px; height: 180px; background: radial-gradient(circle at 30% 25%, #ffe4b5, #d4891a 70%, #7a4f0e);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 40px #ff8c00, inset 0 -5px 10px #00000080, inset 0 5px 10px #fff3cf;
+      border: 3px solid #ffc864;
     }
-
     .coin-gfx.crit {
       background: radial-gradient(circle at 30% 25%, #ff4444, #cc0000 70%, #660000) !important;
       box-shadow: 0 0 60px #ff0000, inset 0 -5px 10px #00000080 !important;
       border-color: #ff6666 !important;
     }
-
-    .coin-gfx span {
-      font-size: 52px;
-      font-weight: 900;
-      color: #1a0f02;
-      text-shadow: 2px 3px 0 #ffd58c;
-    }
-
+    .coin-gfx span { font-size: 52px; font-weight: 900; color: #1a0f02; text-shadow: 2px 3px 0 #ffd58c; }
+    
     .upgrade-card {
-      background: #120e18;
-      border: 1px solid;
-      border-radius: 30px;
-      padding: 18px;
-      margin-bottom: 15px;
+      background: #120e18; border: 1px solid #ff8c0060; border-radius: 30px;
+      padding: 18px; margin-bottom: 15px;
     }
-
-    body.bg-default .upgrade-card { border-color: #ff8c0060; }
-
-    .upgrade-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .upgrade-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    body.bg-default .upgrade-title { color: #ffc978; }
-
-    .upgrade-cost {
-      font-size: 20px;
-      font-weight: 800;
-      color: #ffaa00;
-    }
-
+    .upgrade-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .upgrade-title { font-size: 18px; font-weight: 700; color: #ffc978; }
+    .upgrade-cost { font-size: 20px; font-weight: 800; color: #ffaa00; }
     .upgrade-desc {
-      margin-bottom: 15px;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      color: #b8a58b; margin-bottom: 15px; font-size: 14px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-
-    body.bg-default .upgrade-desc { color: #b8a58b; }
-
     .level-badge {
-      background: #2a1f12;
-      padding: 4px 12px;
-      border-radius: 30px;
-      font-weight: 600;
+      background: #2a1f12; padding: 4px 12px; border-radius: 30px;
+      color: #ffc978; font-weight: 600;
     }
-
-    body.bg-default .level-badge { color: #ffc978; }
-
     .buy-btn {
-      width: 100%;
-      background: #2a1f12;
-      border: 1px solid;
-      font-weight: 700;
-      font-size: 16px;
-      padding: 14px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      width: 100%; background: #2a1f12; border: 1px solid #ff8c00;
+      color: #ffdca8; font-weight: 700; font-size: 16px; padding: 14px;
+      border-radius: 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
     }
-
-    body.bg-default .buy-btn { border-color: #ff8c00; color: #ffdca8; }
-
-    .buy-btn:active {
-      transform: translateY(2px);
+    .buy-btn:active { transform: translateY(2px); }
+    .buy-btn.disabled { opacity: 0.3; pointer-events: none; }
+    
+    .daily-card {
+      background: linear-gradient(135deg, #2a1f12, #1a1425); border: 1px solid #ffaa00;
+      border-radius: 30px; padding: 20px; text-align: center; margin-bottom: 20px;
     }
-
-    .buy-btn.disabled {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    .daily-bonus-card {
-      background: linear-gradient(135deg, #2a1f12, #1a1425);
-      border: 1px solid #ffaa00;
-      border-radius: 30px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .daily-title {
-      color: #ffc978;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .daily-timer {
-      color: #b89b72;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-
+    .daily-title { color: #ffc978; font-size: 18px; margin-bottom: 10px; }
+    .daily-timer { color: #b89b72; font-size: 14px; margin-bottom: 15px; }
     .daily-btn {
-      background: linear-gradient(135deg, #ff8c00, #ffaa33);
-      border: none;
-      border-radius: 50px;
-      padding: 12px 30px;
-      color: #0a0a0f;
-      font-weight: 700;
-      font-size: 16px;
-      cursor: pointer;
+      background: linear-gradient(135deg, #ff8c00, #ffaa33); border: none;
+      border-radius: 50px; padding: 12px 30px; color: #0a0a0f; font-weight: 700;
+      font-size: 16px; cursor: pointer;
     }
-
-    .daily-btn.disabled {
-      opacity: 0.3;
-      pointer-events: none;
+    .daily-btn.disabled { opacity: 0.3; pointer-events: none; }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab {
+      flex: 1; padding: 10px; background: #1a1425; border: 1px solid #ff8c0050;
+      border-radius: 30px; color: #b89b72; font-size: 14px; cursor: pointer;
+      text-align: center; transition: 0.2s;
     }
-
-    .customization-section {
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid;
-    }
-
-    body.bg-default .customization-section { border-color: #ff8c0030; }
-
-    .customization-title {
-      font-size: 18px;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    body.bg-default .customization-title { color: #ffc978; }
-
-    .customization-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .custom-btn {
-      background: linear-gradient(135deg, #8a2be2, #4a0080);
-      border: 1px solid #ba7bff;
-      color: #ffdca8;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 12px;
-      border-radius: 50px;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .current-info {
-      text-align: center;
-      font-size: 14px;
-    }
-
-    body.bg-default .current-info { color: #b89b72; }
-
-    .copyright {
-      text-align: center;
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    body.bg-default .copyright { border-color: #ff8c0030; color: #b89b72; }
-
-    .register-screen {
-      text-align: center;
-      padding: 20px 10px;
-    }
-
-    .register-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: #ffd28f;
-      text-shadow: 0 0 20px #ff8c00;
-      margin-bottom: 30px;
-    }
-
-    .password-wrapper {
-      position: relative;
-      margin-bottom: 15px;
-    }
-
-    .register-input {
-      width: 100%;
-      padding: 16px 50px 16px 20px;
-      background: #1a1425;
-      border: 2px solid #ff8c00;
-      border-radius: 50px;
-      color: #ffdca8;
-      font-size: 18px;
-      outline: none;
-      text-align: center;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 20px;
-      color: #b89b72;
-      user-select: none;
-    }
-
-    .register-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #ff8c00, #ffaa33);
-      border: none;
-      border-radius: 50px;
-      color: #0a0a0f;
-      font-weight: 800;
-      font-size: 18px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .achievement-card {
-      background: #120e18;
-      border: 1px solid #ff8c0060;
-      border-radius: 20px;
-      padding: 15px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .achievement-info {
-      flex: 1;
-    }
-
-    .achievement-name {
-      color: #ffc978;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-
-    .achievement-desc {
-      color: #b8a58b;
-      font-size: 12px;
-    }
-
-    .achievement-status {
-      color: #00ff88;
-      font-size: 20px;
-    }
-
-    .achievement-locked {
-      color: #6a5a47;
-    }
-
+    .tab.active { background: #ff8c00; color: #0a0a0f; font-weight: 700; }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    
     .leaderboard-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px 15px;
-      background: #120e18;
-      border: 1px solid #ff8c0050;
-      border-radius: 20px;
-      margin-bottom: 8px;
+      display: flex; justify-content: space-between; padding: 12px 15px;
+      background: #120e18; border: 1px solid #ff8c0050; border-radius: 20px; margin-bottom: 8px;
     }
-
-    .leaderboard-rank {
-      color: #ffaa00;
-      font-weight: 700;
-      width: 50px;
-    }
-
-    .leaderboard-name {
-      color: #ffdca8;
-      flex: 1;
-    }
-
-    .leaderboard-balance {
-      color: #00ff88;
-      font-weight: 700;
-    }
-
+    .leaderboard-rank { color: #ffaa00; font-weight: 700; width: 50px; }
+    .leaderboard-name { color: #ffdca8; flex: 1; }
+    .leaderboard-balance { color: #00ff88; font-weight: 700; }
     .top-badge {
-      background: linear-gradient(135deg, #ffd700, #ff8c00);
-      color: #000;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 700;
-      margin-left: 5px;
+      background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000;
+      padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; margin-left: 5px;
     }
-
+    
+    .achievement-card {
+      background: #120e18; border: 1px solid #ff8c0060; border-radius: 20px;
+      padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between;
+    }
+    .achievement-name { color: #ffc978; font-weight: 600; margin-bottom: 5px; }
+    .achievement-desc { color: #b8a58b; font-size: 12px; }
+    .achievement-status { color: #00ff88; font-size: 20px; }
+    .achievement-locked { color: #6a5a47; }
+    
+    .custom-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid #ff8c0030; }
+    .custom-title { font-size: 18px; color: #ffc978; margin-bottom: 15px; text-align: center; }
+    .custom-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .custom-btn {
+      background: linear-gradient(135deg, #8a2be2, #4a0080); border: 1px solid #ba7bff;
+      color: #ffdca8; font-weight: 700; font-size: 14px; padding: 12px;
+      border-radius: 50px; cursor: pointer; text-align: center;
+    }
+    .current-info { text-align: center; color: #b89b72; font-size: 14px; }
+    
+    .copyright {
+      text-align: center; margin-top: 20px; padding-top: 15px;
+      border-top: 1px solid #ff8c0030; color: #b89b72; font-size: 12px; opacity: 0.7;
+    }
+    
+    .status-message { text-align: center; margin-top: 15px; color: #eebb77; min-height: 24px; }
+    
     .floating-number {
-      position: fixed;
-      font-weight: 900;
-      font-size: 32px;
-      pointer-events: none;
-      z-index: 9999;
-      animation: floatUp 0.8s ease-out forwards;
+      position: fixed; font-weight: 900; font-size: 32px; pointer-events: none;
+      z-index: 9999; animation: floatUp 0.8s ease-out forwards;
+      color: #ffd28f; text-shadow: 0 0 20px #ff8c00, 0 2px 4px #000;
     }
-
-    body.bg-default .floating-number { color: #ffd28f; text-shadow: 0 0 20px #ff8c00, 0 2px 4px #000; }
-
     .floating-number.crit {
-      color: #ff4444 !important;
-      text-shadow: 0 0 30px #ff0000, 0 2px 4px #000 !important;
+      color: #ff4444 !important; text-shadow: 0 0 30px #ff0000, 0 2px 4px #000 !important;
       font-size: 42px;
     }
-
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0); }
       100% { opacity: 0; transform: translateY(-100px); }
     }
-
+    
     @media (max-width: 400px) {
       .coin-gfx { width: 150px; height: 150px; }
       .coin-gfx span { font-size: 42px; }
@@ -610,19 +219,25 @@
 </head>
 <body class="bg-default font-inter">
 <div class="game-container">
-  <!-- Экран регистрации -->
-  <div id="registerScreen" class="register-screen">
-    <div class="register-title">🚀 EnFT Tap</div>
-    <input type="text" id="usernameInput" class="register-input" placeholder="Твой ник" maxlength="20" autocomplete="off">
-    <div class="password-wrapper">
-      <input type="password" id="passwordInput" class="register-input" placeholder="Пароль" maxlength="30" autocomplete="off">
-      <span class="toggle-password" id="togglePassword">👁️</span>
-    </div>
-    <button id="registerBtn" class="register-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
+  
+  <!-- ЭКРАН ВХОДА/РЕГИСТРАЦИИ -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-title">🚀 EnFT Tap</div>
+    <div class="auth-subtitle">Введи email и пароль</div>
+    
+    <input type="email" id="emailInput" class="auth-input" placeholder="Email" autocomplete="email">
+    <div id="emailError" class="error-message">Только латиница, цифры, точка и подчёркивание</div>
+    
+    <input type="password" id="passwordInput" class="auth-input" placeholder="Пароль" autocomplete="current-password">
+    <div id="passwordError" class="error-message">Минимум 6 символов</div>
+    
+    <button id="authBtn" class="auth-btn">ВОЙТИ / РЕГИСТРАЦИЯ</button>
+    
+    <div id="authToggle" class="auth-toggle">Впервые? Просто введи данные</div>
   </div>
-
-  <!-- Основной экран -->
-  <div id="mainScreen" style="display: none;">
+  
+  <!-- ОСНОВНОЙ ЭКРАН ИГРЫ -->
+  <div id="mainScreen" class="main-screen">
     <div class="profile-section">
       <div class="profile-info">
         <div class="profile-avatar" id="profileAvatar">E</div>
@@ -630,27 +245,25 @@
       </div>
       <button class="logout-btn" id="logoutBtn">Выйти</button>
     </div>
-
+    
     <div class="tabs">
       <div class="tab active" data-tab="game">Игра</div>
       <div class="tab" data-tab="achievements">Достижения</div>
       <div class="tab" data-tab="leaderboard">Топ</div>
     </div>
-
+    
     <div id="gameScreen" class="screen active">
       <div class="balance-section">
         <div class="balance-label">БАЛАНС EnFT</div>
-        <div class="balance-value">
-          <span id="balanceDisplay">0.0</span> ⚡
-        </div>
+        <div class="balance-value"><span id="balanceDisplay">0.0</span> ⚡</div>
       </div>
-
-      <div class="daily-bonus-card">
+      
+      <div class="daily-card">
         <div class="daily-title">🎁 ЕЖЕДНЕВНЫЙ БОНУС</div>
-        <div class="daily-timer" id="dailyTimer">+50 EnFT доступно!</div>
+        <div class="daily-timer" id="dailyTimer">Загрузка...</div>
         <button class="daily-btn" id="dailyBonusBtn">ЗАБРАТЬ</button>
       </div>
-
+      
       <div class="stats-row">
         <div class="stat-item">
           <div class="stat-label">СИЛА ТАПА</div>
@@ -661,15 +274,13 @@
           <div class="stat-value" id="critChanceDisplay">0%</div>
         </div>
       </div>
-
+      
       <div class="tap-area">
         <button class="coin-button" id="tapButton">
-          <div class="coin-gfx" id="coinGfx">
-            <span>EnFT</span>
-          </div>
+          <div class="coin-gfx" id="coinGfx"><span>EnFT</span></div>
         </button>
       </div>
-
+      
       <div class="upgrade-card">
         <div class="upgrade-header">
           <span class="upgrade-title">💪 УЛУЧШИТЬ УДАР</span>
@@ -681,7 +292,7 @@
         </div>
         <button class="buy-btn" id="buyPunchBtn">УЛУЧШИТЬ</button>
       </div>
-
+      
       <div class="upgrade-card">
         <div class="upgrade-header">
           <span class="upgrade-title">🎯 КРИТИЧЕСКИЙ ШАНС</span>
@@ -693,449 +304,318 @@
         </div>
         <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
       </div>
-
-      <div class="customization-section">
-        <div class="customization-title">🎨 КАСТОМИЗАЦИЯ</div>
-        <div class="customization-buttons">
+      
+      <div class="custom-section">
+        <div class="custom-title">🎨 КАСТОМИЗАЦИЯ</div>
+        <div class="custom-buttons">
           <button class="custom-btn" id="randomBgBtn">🎲 ФОН (50)</button>
           <button class="custom-btn" id="randomFontBtn">🔤 ШРИФТ (30)</button>
         </div>
         <div class="current-info">
-          <span id="currentBgName">Стандарт</span> · 
-          <span id="currentFontName">Inter</span>
+          <span id="currentBgName">Стандарт</span> · <span id="currentFontName">Inter</span>
         </div>
       </div>
-
-      <div id="messageArea" class="status-message" style="text-align: center; margin-top: 15px; color: #eebb77;"></div>
+      
+      <div id="messageArea" class="status-message"></div>
     </div>
-
+    
     <div id="achievementsScreen" class="screen">
       <div id="achievementsList"></div>
     </div>
-
+    
     <div id="leaderboardScreen" class="screen">
       <div id="leaderboardList"></div>
     </div>
-
+    
     <div class="copyright">Enight — Машенькин Евгений креатор</div>
   </div>
 </div>
 
 <script>
-  (function(){
-    "use strict";
-
-    // Звуки (заглушки)
-    const sounds = {
-      tap: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
-      crit: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38='),
-      buy: new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgYGBgYCAgICAgICAf39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f38=')
-    };
+  // ========== КОНФИГ SUPABASE ==========
+  const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
+  const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9' // ВСТАВЬ СВОЙ ПОЛНЫЙ КЛЮЧ
+  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  
+  // ========== ПЕРЕМЕННЫЕ ==========
+  let currentUser = null
+  const PUNCH_BASE = 50, PUNCH_MULT = 1.4, PUNCH_BONUS = 0.5
+  const CRIT_BASE = 100, CRIT_MULT = 1.5, CRIT_BONUS = 2, MAX_CRIT = 50
+  const BG_COST = 50, FONT_COST = 30
+  const BG_LIST = ['bg-default', 'bg-neon', 'bg-gold', 'bg-matrix', 'bg-sunset', 'bg-ocean']
+  const BG_NAMES = ['Стандарт', 'Неон', 'Золото', 'Матрица', 'Закат', 'Океан']
+  const FONT_LIST = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo']
+  const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One']
+  
+  const ACHIEVEMENTS = [
+    { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10 },
+    { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50 },
+    { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30 },
+    { id: 'bg_5', name: 'Дизайнер', desc: '5 смен фона', reward: 100 }
+  ]
+  
+  // ========== UI ЭЛЕМЕНТЫ ==========
+  const authScreen = document.getElementById('authScreen')
+  const mainScreen = document.getElementById('mainScreen')
+  const emailInput = document.getElementById('emailInput')
+  const passwordInput = document.getElementById('passwordInput')
+  const emailError = document.getElementById('emailError')
+  const passwordError = document.getElementById('passwordError')
+  const authBtn = document.getElementById('authBtn')
+  const logoutBtn = document.getElementById('logoutBtn')
+  const profileName = document.getElementById('profileName')
+  const profileAvatar = document.getElementById('profileAvatar')
+  const balanceSpan = document.getElementById('balanceDisplay')
+  const tapPowerSpan = document.getElementById('tapPowerDisplay')
+  const critChanceSpan = document.getElementById('critChanceDisplay')
+  const punchCostSpan = document.getElementById('punchCostDisplay')
+  const critCostSpan = document.getElementById('critCostDisplay')
+  const punchLevelSpan = document.getElementById('punchLevelDisplay')
+  const critLevelSpan = document.getElementById('critLevelDisplay')
+  const dailyTimer = document.getElementById('dailyTimer')
+  const dailyBtn = document.getElementById('dailyBonusBtn')
+  const messageDiv = document.getElementById('messageArea')
+  const coinGfx = document.getElementById('coinGfx')
+  const currentBgName = document.getElementById('currentBgName')
+  const currentFontName = document.getElementById('currentFontName')
+  
+  // ========== ФУНКЦИИ ==========
+  function validateEmail(email) {
+    return /^[a-zA-Z0-9._@]+$/.test(email) && email.includes('@') && email.includes('.')
+  }
+  
+  function getTapPower() {
+    return 1.0 + (currentUser?.punch_level || 0) * PUNCH_BONUS
+  }
+  
+  function getCritChance() {
+    return Math.min((currentUser?.crit_level || 0) * CRIT_BONUS, MAX_CRIT)
+  }
+  
+  function getPunchCost() {
+    return Math.floor(PUNCH_BASE * Math.pow(PUNCH_MULT, currentUser?.punch_level || 0))
+  }
+  
+  function getCritCost() {
+    return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.crit_level || 0))
+  }
+  
+  async function getLeaderboard() {
+    const { data } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
+    return data || []
+  }
+  
+  function getPlayerRank(balance) {
+    return getLeaderboard().then(data => data.findIndex(p => p.balance <= balance) + 1 || data.length + 1)
+  }
+  
+  function getDailyBonus(rank) {
+    if (rank <= 5) return 150
+    if (rank <= 10) return 100
+    return 50
+  }
+  
+  async function refreshUI() {
+    if (!currentUser) return
     
-    let soundsEnabled = false;
+    balanceSpan.textContent = currentUser.balance.toFixed(1)
+    tapPowerSpan.textContent = getTapPower().toFixed(1)
+    critChanceSpan.textContent = getCritChance() + '%'
     
-    function enableSounds() {
-      soundsEnabled = true;
+    const punchCost = getPunchCost()
+    punchCostSpan.textContent = punchCost
+    punchLevelSpan.textContent = `УР. ${currentUser.punch_level || 0}`
+    document.getElementById('buyPunchBtn').classList.toggle('disabled', currentUser.balance < punchCost)
+    
+    const critCost = getCritCost()
+    critCostSpan.textContent = critCost
+    critLevelSpan.textContent = `УР. ${currentUser.crit_level || 0}`
+    document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < critCost || getCritChance() >= MAX_CRIT)
+    
+    profileName.textContent = currentUser.email.split('@')[0]
+    profileAvatar.textContent = currentUser.email[0].toUpperCase()
+    
+    document.body.className = `${currentUser.current_bg || 'bg-default'} ${currentUser.current_font || 'font-inter'}`
+    currentBgName.textContent = BG_NAMES[BG_LIST.indexOf(currentUser.current_bg)] || 'Стандарт'
+    currentFontName.textContent = FONT_NAMES[FONT_LIST.indexOf(currentUser.current_font)] || 'Inter'
+    
+    await updateDailyBonus()
+  }
+  
+  async function updateDailyBonus() {
+    const now = Date.now()
+    const last = currentUser.last_daily ? new Date(currentUser.last_daily).getTime() : 0
+    const left = last + 86400000 - now
+    
+    const lb = await getLeaderboard()
+    const rank = lb.findIndex(p => p.email === currentUser.email) + 1
+    const bonus = getDailyBonus(rank)
+    const multiplier = rank <= 5 ? ' (ТОП-5 x3!)' : rank <= 10 ? ' (ТОП-10 x2!)' : ''
+    
+    if (left <= 0) {
+      dailyTimer.textContent = `+${bonus} EnFT доступно!${multiplier}`
+      dailyBtn.classList.remove('disabled')
+    } else {
+      const h = Math.floor(left / 3600000)
+      const m = Math.floor((left % 3600000) / 60000)
+      dailyTimer.textContent = `Через ${h}ч ${m}м (бонус: ${bonus}${multiplier})`
+      dailyBtn.classList.add('disabled')
+    }
+  }
+  
+  async function claimDaily() {
+    const now = new Date().toISOString()
+    const last = currentUser.last_daily ? new Date(currentUser.last_daily).getTime() : 0
+    if (Date.now() - last < 86400000) return
+    
+    const lb = await getLeaderboard()
+    const rank = lb.findIndex(p => p.email === currentUser.email) + 1
+    const bonus = getDailyBonus(rank)
+    
+    currentUser.balance += bonus
+    currentUser.last_daily = now
+    
+    await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
+    messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`
+    refreshUI()
+  }
+  
+  async function saveUser() {
+    if (!currentUser) return
+    await supabase.from('players').upsert(currentUser)
+  }
+  
+  async function loginOrRegister() {
+    const email = emailInput.value.trim().toLowerCase()
+    const password = passwordInput.value
+    
+    emailError.style.display = 'none'
+    passwordError.style.display = 'none'
+    emailInput.classList.remove('error')
+    
+    if (!validateEmail(email)) {
+      emailError.style.display = 'block'
+      emailInput.classList.add('error')
+      return
     }
     
-    function playSound(name) {
-      if (!soundsEnabled) return;
-      sounds[name]?.play().catch(() => {});
+    if (password.length < 6) {
+      passwordError.style.display = 'block'
+      return
     }
-
-    // Состояние
-    let currentUser = null;
     
-    const PUNCH_BASE = 50;
-    const PUNCH_MULT = 1.4;
-    const PUNCH_BONUS = 0.5;
+    // Проверяем существование
+    const { data } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
     
-    const CRIT_BASE = 100;
-    const CRIT_MULT = 1.5;
-    const CRIT_BONUS = 2;
-    const MAX_CRIT = 50;
-    
-    const BG_COST = 50;
-    const FONT_COST = 30;
-    
-    const BACKGROUNDS = ['bg-default', 'bg-neon', 'bg-gold', 'bg-matrix', 'bg-sunset', 'bg-ocean'];
-    const BG_NAMES = ['Стандарт', 'Неон', 'Золото', 'Матрица', 'Закат', 'Океан'];
-    
-    const FONTS = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo'];
-    const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One'];
-
-    const ACHIEVEMENTS = [
-      { id: 'taps_100', name: 'Новичок', desc: '100 тапов', reward: 10 },
-      { id: 'taps_1000', name: 'Тапер', desc: '1000 тапов', reward: 50 },
-      { id: 'crit_10', name: 'Критик', desc: '10 критов', reward: 30 },
-      { id: 'bg_5', name: 'Дизайнер', desc: '5 смен фона', reward: 100 }
-    ];
-
-    // UI
-    const registerScreen = document.getElementById('registerScreen');
-    const mainScreen = document.getElementById('mainScreen');
-    const usernameInput = document.getElementById('usernameInput');
-    const passwordInput = document.getElementById('passwordInput');
-    const registerBtn = document.getElementById('registerBtn');
-    const togglePassword = document.getElementById('togglePassword');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const profileAvatar = document.getElementById('profileAvatar');
-    const profileName = document.getElementById('profileName');
-    const balanceSpan = document.getElementById('balanceDisplay');
-    const tapPowerSpan = document.getElementById('tapPowerDisplay');
-    const critChanceDisplay = document.getElementById('critChanceDisplay');
-    const punchCostSpan = document.getElementById('punchCostDisplay');
-    const critCostSpan = document.getElementById('critCostDisplay');
-    const punchLevelSpan = document.getElementById('punchLevelDisplay');
-    const critLevelSpan = document.getElementById('critLevelDisplay');
-    const currentBgName = document.getElementById('currentBgName');
-    const currentFontName = document.getElementById('currentFontName');
-    const messageDiv = document.getElementById('messageArea');
-    const coinGfx = document.getElementById('coinGfx');
-    const dailyTimer = document.getElementById('dailyTimer');
-    const dailyBonusBtn = document.getElementById('dailyBonusBtn');
-
-    // Вкладки
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab + 'Screen').classList.add('active');
-        if (tab.dataset.tab === 'achievements') updateAchievements();
-        if (tab.dataset.tab === 'leaderboard') updateLeaderboard();
-      });
-    });
-
-    // Показать пароль
-    togglePassword.addEventListener('click', function() {
-      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-      this.textContent = passwordInput.type === 'password' ? '👁️' : '🔒';
-    });
-
-    // Функции
-    function getTapPower() {
-      return 1.0 + (currentUser?.punchLevel || 0) * PUNCH_BONUS;
-    }
-
-    function getCritChance() {
-      return Math.min((currentUser?.critLevel || 0) * CRIT_BONUS, MAX_CRIT);
-    }
-
-    function getPunchCost() {
-      return Math.floor(PUNCH_BASE * Math.pow(PUNCH_MULT, currentUser?.punchLevel || 0));
-    }
-
-    function getCritCost() {
-      return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.critLevel || 0));
-    }
-
-    function saveAllUsers(users) {
-      localStorage.setItem('enft_users_final', JSON.stringify(users));
-    }
-
-    function loadAllUsers() {
-      return JSON.parse(localStorage.getItem('enft_users_final') || '{}');
-    }
-
-    function saveCurrentUser() {
-      if (!currentUser) return;
-      const users = loadAllUsers();
-      users[currentUser.name] = currentUser;
-      saveAllUsers(users);
-      localStorage.setItem('enft_last_user', currentUser.name);
-    }
-
-    function getPlayerRank() {
-      const users = loadAllUsers();
-      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance);
-      const index = sorted.findIndex(u => u.name === currentUser.name);
-      return { rank: index + 1, total: sorted.length };
-    }
-
-    function getDailyBonusAmount() {
-      const rank = getPlayerRank().rank;
-      if (rank <= 5) return 150;  // ТОП-5: x3
-      if (rank <= 10) return 100; // ТОП-10: x2
-      return 50;                   // Обычный
-    }
-
-    function refreshUI() {
-      if (!currentUser) return;
-      
-      balanceSpan.textContent = currentUser.balance.toFixed(1);
-      tapPowerSpan.textContent = getTapPower().toFixed(1);
-      critChanceDisplay.textContent = getCritChance() + '%';
-      
-      const punchCost = getPunchCost();
-      punchCostSpan.textContent = punchCost;
-      punchLevelSpan.textContent = `УР. ${currentUser.punchLevel}`;
-      document.getElementById('buyPunchBtn').classList.toggle('disabled', currentUser.balance < punchCost);
-      
-      const critCost = getCritCost();
-      critCostSpan.textContent = critCost;
-      critLevelSpan.textContent = `УР. ${currentUser.critLevel}`;
-      document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < critCost || getCritChance() >= MAX_CRIT);
-      
-      profileName.textContent = currentUser.name;
-      profileAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-      
-      // Применяем стили
-      document.body.className = `${currentUser.currentBg || 'bg-default'} ${currentUser.currentFont || 'font-inter'}`;
-      
-      const bgIndex = BACKGROUNDS.indexOf(currentUser.currentBg);
-      currentBgName.textContent = bgIndex >= 0 ? BG_NAMES[bgIndex] : 'Стандарт';
-      
-      const fontIndex = FONTS.indexOf(currentUser.currentFont);
-      currentFontName.textContent = fontIndex >= 0 ? FONT_NAMES[fontIndex] : 'Inter';
-      
-      updateDailyBonus();
-    }
-
-    function updateDailyBonus() {
-      if (!currentUser) return;
-      
-      const now = Date.now();
-      const last = currentUser.lastDailyClaim || 0;
-      const cooldown = 24 * 60 * 60 * 1000;
-      const left = last + cooldown - now;
-      
-      const bonusAmount = getDailyBonusAmount();
-      const rank = getPlayerRank().rank;
-      let multiplier = '';
-      if (rank <= 5) multiplier = ' (ТОП-5 x3!)';
-      else if (rank <= 10) multiplier = ' (ТОП-10 x2!)';
-      
-      if (left <= 0) {
-        dailyTimer.textContent = `+${bonusAmount} EnFT доступно!${multiplier}`;
-        dailyBonusBtn.classList.remove('disabled');
-      } else {
-        const h = Math.floor(left / 3600000);
-        const m = Math.floor((left % 3600000) / 60000);
-        dailyTimer.textContent = `Через ${h}ч ${m}м (бонус: ${bonusAmount}${multiplier})`;
-        dailyBonusBtn.classList.add('disabled');
+    if (data) {
+      if (data.password !== password) {
+        alert('Неверный пароль!')
+        return
       }
-    }
-
-    function claimDaily() {
-      if (!currentUser) return;
-      
-      const now = Date.now();
-      if (now - (currentUser.lastDailyClaim || 0) < 24 * 60 * 60 * 1000) return;
-      
-      const bonus = getDailyBonusAmount();
-      currentUser.balance += bonus;
-      currentUser.lastDailyClaim = now;
-      
-      messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`;
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    }
-
-    function updateAchievements() {
-      const list = document.getElementById('achievementsList');
-      list.innerHTML = '';
-      
-      ACHIEVEMENTS.forEach(ach => {
-        let completed = false;
-        if (ach.id === 'taps_100') completed = (currentUser.totalTaps || 0) >= 100;
-        else if (ach.id === 'taps_1000') completed = (currentUser.totalTaps || 0) >= 1000;
-        else if (ach.id === 'crit_10') completed = (currentUser.totalCrits || 0) >= 10;
-        else if (ach.id === 'bg_5') completed = (currentUser.bgPurchases || 0) >= 5;
-        
-        if (completed && !currentUser.achievements?.includes(ach.id)) {
-          if (!currentUser.achievements) currentUser.achievements = [];
-          currentUser.achievements.push(ach.id);
-          currentUser.balance += ach.reward;
-          messageDiv.textContent = `🏆 ${ach.name}! +${ach.reward}`;
-          saveCurrentUser();
-        }
-        
-        const isDone = currentUser.achievements?.includes(ach.id) || completed;
-        const card = document.createElement('div');
-        card.className = 'achievement-card';
-        card.innerHTML = `
-          <div class="achievement-info">
-            <div class="achievement-name">${ach.name}</div>
-            <div class="achievement-desc">${ach.desc} · +${ach.reward} EnFT</div>
-          </div>
-          <div class="achievement-status ${isDone ? '' : 'achievement-locked'}">${isDone ? '✓' : '🔒'}</div>
-        `;
-        list.appendChild(card);
-      });
-    }
-
-    function updateLeaderboard() {
-      const users = loadAllUsers();
-      const sorted = Object.values(users).sort((a, b) => b.balance - a.balance);
-      
-      const list = document.getElementById('leaderboardList');
-      list.innerHTML = '';
-      
-      sorted.slice(0, 10).forEach((user, i) => {
-        const item = document.createElement('div');
-        item.className = 'leaderboard-item';
-        const rank = i + 1;
-        let badge = '';
-        if (rank <= 5) badge = '<span class="top-badge">x3 БОНУС</span>';
-        else if (rank <= 10) badge = '<span class="top-badge">x2 БОНУС</span>';
-        
-        item.innerHTML = `
-          <span class="leaderboard-rank">#${rank}</span>
-          <span class="leaderboard-name">${user.name} ${badge}</span>
-          <span class="leaderboard-balance">${(user.balance || 0).toFixed(1)} ⚡</span>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    function register() {
-      const name = usernameInput.value.trim();
-      const pass = passwordInput.value;
-      
-      if (!name || !pass) {
-        alert('Введи ник и пароль!');
-        return;
+      currentUser = data
+    } else {
+      currentUser = {
+        email, password,
+        balance: 0, punch_level: 0, crit_level: 0,
+        total_taps: 0, total_crits: 0, bg_purchases: 0,
+        current_bg: 'bg-default', current_font: 'font-inter',
+        last_daily: null
       }
-      
-      const users = loadAllUsers();
-      
-      if (users[name]) {
-        if (users[name].password !== pass) {
-          alert('Неверный пароль!');
-          return;
-        }
-        currentUser = users[name];
-      } else {
-        currentUser = {
-          name, password: pass,
-          balance: 0, punchLevel: 0, critLevel: 0,
-          currentBg: 'bg-default', currentFont: 'font-inter',
-          totalTaps: 0, totalCrits: 0, bgPurchases: 0,
-          achievements: [], lastDailyClaim: 0
-        };
-        users[name] = currentUser;
-        saveAllUsers(users);
-      }
-      
-      localStorage.setItem('enft_last_user', name);
-      registerScreen.style.display = 'none';
-      mainScreen.style.display = 'block';
-      refreshUI();
-      enableSounds();
-    }
-
-    function logout() {
-      saveCurrentUser();
-      localStorage.removeItem('enft_last_user');
-      currentUser = null;
-      registerScreen.style.display = 'block';
-      mainScreen.style.display = 'none';
-      usernameInput.value = '';
-      passwordInput.value = '';
-    }
-
-    function handleTap(e) {
-      if (!currentUser) return;
-      
-      currentUser.totalTaps = (currentUser.totalTaps || 0) + 1;
-      let earned = getTapPower();
-      const isCrit = Math.random() * 100 < getCritChance();
-      
-      if (isCrit) {
-        earned *= 2;
-        currentUser.totalCrits = (currentUser.totalCrits || 0) + 1;
-        coinGfx.classList.add('crit');
-        setTimeout(() => coinGfx.classList.remove('crit'), 100);
-        playSound('crit');
-      } else {
-        playSound('tap');
-      }
-      
-      currentUser.balance += earned;
-      
-      const float = document.createElement('div');
-      float.className = `floating-number${isCrit ? ' crit' : ''}`;
-      float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`;
-      float.style.left = (e.clientX - 20) + 'px';
-      float.style.top = (e.clientY - 30) + 'px';
-      document.body.appendChild(float);
-      setTimeout(() => float.remove(), 800);
-      
-      refreshUI();
-      saveCurrentUser();
-      messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`;
-    }
-
-    // Инициализация
-    registerBtn.addEventListener('click', register);
-    logoutBtn.addEventListener('click', logout);
-    document.getElementById('tapButton').addEventListener('click', handleTap);
-    
-    document.getElementById('buyPunchBtn').addEventListener('click', () => {
-      if (!currentUser) return;
-      const cost = getPunchCost();
-      if (currentUser.balance < cost) return;
-      currentUser.balance -= cost;
-      currentUser.punchLevel++;
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    });
-    
-    document.getElementById('buyCritBtn').addEventListener('click', () => {
-      if (!currentUser) return;
-      if (getCritChance() >= MAX_CRIT) return;
-      const cost = getCritCost();
-      if (currentUser.balance < cost) return;
-      currentUser.balance -= cost;
-      currentUser.critLevel++;
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    });
-    
-    document.getElementById('randomBgBtn').addEventListener('click', () => {
-      if (!currentUser || currentUser.balance < BG_COST) return;
-      currentUser.balance -= BG_COST;
-      currentUser.bgPurchases = (currentUser.bgPurchases || 0) + 1;
-      const available = BACKGROUNDS.filter(b => b !== currentUser.currentBg);
-      currentUser.currentBg = available[Math.floor(Math.random() * available.length)];
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    });
-    
-    document.getElementById('randomFontBtn').addEventListener('click', () => {
-      if (!currentUser || currentUser.balance < FONT_COST) return;
-      currentUser.balance -= FONT_COST;
-      const available = FONTS.filter(f => f !== currentUser.currentFont);
-      currentUser.currentFont = available[Math.floor(Math.random() * available.length)];
-      playSound('buy');
-      refreshUI();
-      saveCurrentUser();
-    });
-    
-    dailyBonusBtn.addEventListener('click', claimDaily);
-    
-    usernameInput.addEventListener('keypress', e => { if (e.key === 'Enter') register(); });
-    passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') register(); });
-    
-    // Авто-вход
-    const lastUser = localStorage.getItem('enft_last_user');
-    if (lastUser) {
-      const users = loadAllUsers();
-      if (users[lastUser]) {
-        currentUser = users[lastUser];
-        registerScreen.style.display = 'none';
-        mainScreen.style.display = 'block';
-        refreshUI();
-      }
+      await supabase.from('players').insert(currentUser)
     }
     
-    setInterval(() => { if (currentUser) updateDailyBonus(); }, 1000);
-  })();
-</script>
-</body>
-</html>
+    localStorage.setItem('enft_email', email)
+    authScreen.style.display = 'none'
+    mainScreen.style.display = 'block'
+    refreshUI()
+    updateAchievements()
+  }
+  
+  async function handleTap(e) {
+    if (!currentUser) return
+    
+    currentUser.total_taps++
+    let earned = getTapPower()
+    const isCrit = Math.random() * 100 < getCritChance()
+    
+    if (isCrit) {
+      earned *= 2
+      currentUser.total_crits++
+      coinGfx.classList.add('crit')
+      setTimeout(() => coinGfx.classList.remove('crit'), 100)
+    }
+    
+    currentUser.balance += earned
+    
+    const float = document.createElement('div')
+    float.className = `floating-number${isCrit ? ' crit' : ''}`
+    float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`
+    float.style.left = (e.clientX - 20) + 'px'
+    float.style.top = (e.clientY - 30) + 'px'
+    document.body.appendChild(float)
+    setTimeout(() => float.remove(), 800)
+    
+    await supabase.from('players').update({
+      balance: currentUser.balance,
+      total_taps: currentUser.total_taps,
+      total_crits: currentUser.total_crits
+    }).eq('email', currentUser.email)
+    
+    refreshUI()
+    checkAchievements()
+    messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
+  }
+  
+  async function buyPunch() {
+    const cost = getPunchCost()
+    if (currentUser.balance < cost) return
+    
+    currentUser.balance -= cost
+    currentUser.punch_level++
+    await saveUser()
+    refreshUI()
+    messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
+  }
+  
+  async function buyCrit() {
+    if (getCritChance() >= MAX_CRIT) return
+    const cost = getCritCost()
+    if (currentUser.balance < cost) return
+    
+    currentUser.balance -= cost
+    currentUser.crit_level++
+    await saveUser()
+    refreshUI()
+    messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`
+  }
+  
+  async function randomBg() {
+    if (currentUser.balance < BG_COST) return
+    currentUser.balance -= BG_COST
+    currentUser.bg_purchases++
+    const available = BG_LIST.filter(b => b !== currentUser.current_bg)
+    currentUser.current_bg = available[Math.floor(Math.random() * available.length)]
+    await saveUser()
+    refreshUI()
+    checkAchievements()
+  }
+  
+  async function randomFont() {
+    if (currentUser.balance < FONT_COST) return
+    currentUser.balance -= FONT_COST
+    const available = FONT_LIST.filter(f => f !== currentUser.current_font)
+    currentUser.current_font = available[Math.floor(Math.random() * available.length)]
+    await saveUser()
+    refreshUI()
+  }
+  
+  function checkAchievements() {
+    const completed = []
+    if (currentUser.total_taps >= 100) completed.push('taps_100')
+    if (currentUser.total_taps >= 1000) completed.push('taps_1000')
+    if (currentUser.total_crits >= 10) completed.push('crit_10')
+    if (currentUser.bg_purchases >= 5) completed.push('bg_5')
+    
+    completed.forEach(id => {
+      const ach = A
