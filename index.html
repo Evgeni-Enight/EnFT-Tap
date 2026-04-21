@@ -51,12 +51,12 @@
     .password-wrapper { position: relative; margin-bottom: 15px; }
     .auth-input {
       width: 100%; padding: 16px 50px 16px 20px; background: #1a1425; border: 2px solid #ff8c00;
-      border-radius: 50px; color: #ffdca8; font-size: 18px; outline: none; text-align: center;
+      border-radius: 50px; color: #ffdca8; font-size: 18px; outline: none; text-align: left;
     }
     .auth-input::placeholder { color: #8a7a5f; }
     .toggle-password {
       position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-      cursor: pointer; font-size: 20px; user-select: none; color: #b89b72;
+      cursor: pointer; font-size: 20px; user-select: none; color: #b89b72; z-index: 10;
     }
     
     .auth-btn {
@@ -172,15 +172,6 @@
       padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; margin-left: 5px;
     }
     
-    .achievement-card {
-      background: #120e18; border: 1px solid #ff8c0060; border-radius: 20px;
-      padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between;
-    }
-    .achievement-name { color: #ffc978; font-weight: 600; margin-bottom: 5px; }
-    .achievement-desc { color: #b8a58b; font-size: 12px; }
-    .achievement-status { color: #00ff88; font-size: 20px; }
-    .achievement-locked { color: #6a5a47; }
-    
     .custom-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid #ff8c0030; }
     .custom-title { font-size: 18px; color: #ffc978; margin-bottom: 15px; text-align: center; }
     .custom-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -216,7 +207,6 @@
 <body class="bg-default font-inter">
 <div class="game-container">
   
-  <!-- ЭКРАН ВХОДА -->
   <div id="authScreen" class="auth-screen">
     <div class="auth-title">🚀 EnFT Tap</div>
     <div class="auth-subtitle">Введи email и пароль</div>
@@ -232,7 +222,6 @@
     <div id="authMessage" style="color: #ff6b6b; font-size: 12px; margin-top: 10px;"></div>
   </div>
   
-  <!-- ОСНОВНОЙ ЭКРАН -->
   <div id="mainScreen" class="main-screen">
     <div class="profile-section">
       <div class="profile-info">
@@ -325,7 +314,10 @@
 <script>
   // КОНФИГ SUPABASE
   const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
-  const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9' // ЗАМЕНИ НА СВОЙ ПОЛНЫЙ КЛЮЧ
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtcnppaWZ5ZWtxbWJucHp1c2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyMjg4MDAsImV4cCI6MjA2MDgwNDgwMH0.sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9'
+  
+  // Проверяем ключ
+  console.log('🔑 Подключение к Supabase...')
   
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   
@@ -364,9 +356,14 @@
   const currentFontName = document.getElementById('currentFontName')
   
   // Глазик
-  togglePassword.addEventListener('click', () => {
-    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
-    togglePassword.textContent = passwordInput.type === 'password' ? '👁️' : '🔒'
+  togglePassword.addEventListener('click', function() {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text'
+      this.textContent = '🔒'
+    } else {
+      passwordInput.type = 'password'
+      this.textContent = '👁️'
+    }
   })
   
   // Вкладки
@@ -397,7 +394,8 @@
   }
   
   async function getLeaderboard() {
-    const { data } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
+    const { data, error } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
+    if (error) console.error('Ошибка загрузки топа:', error)
     return data || []
   }
   
@@ -418,7 +416,7 @@
   async function refreshUI() {
     if (!currentUser) return
     
-    balanceSpan.textContent = currentUser.balance.toFixed(1)
+    balanceSpan.textContent = (currentUser.balance || 0).toFixed(1)
     tapPowerSpan.textContent = getTapPower().toFixed(1)
     critChanceSpan.textContent = getCritChance() + '%'
     
@@ -480,7 +478,9 @@
     currentUser.balance += bonus
     currentUser.last_daily = now
     
-    await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
+    const { error } = await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
+    if (error) console.error('Ошибка бонуса:', error)
+    
     messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`
     refreshUI()
   }
@@ -499,7 +499,15 @@
       return
     }
     
-    const { data } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
+    authMessage.textContent = 'Загрузка...'
+    
+    const { data, error } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
+    
+    if (error) {
+      authMessage.textContent = 'Ошибка сервера: ' + error.message
+      console.error(error)
+      return
+    }
     
     if (data) {
       if (data.password !== password) {
@@ -507,6 +515,7 @@
         return
       }
       currentUser = data
+      authMessage.textContent = ''
     } else {
       currentUser = {
         email, password,
@@ -515,7 +524,13 @@
         current_bg: 'bg-default', current_font: 'font-inter',
         last_daily: null
       }
-      await supabase.from('players').insert(currentUser)
+      const { error: insertError } = await supabase.from('players').insert(currentUser)
+      if (insertError) {
+        authMessage.textContent = 'Ошибка регистрации: ' + insertError.message
+        console.error(insertError)
+        return
+      }
+      authMessage.textContent = ''
     }
     
     localStorage.setItem('enft_email', email)
@@ -606,35 +621,4 @@
     emailInput.value = ''
     passwordInput.value = ''
     authMessage.textContent = ''
-  }
-  
-  // Привязка событий
-  authBtn.addEventListener('click', loginOrRegister)
-  logoutBtn.addEventListener('click', logout)
-  document.getElementById('tapButton').addEventListener('click', handleTap)
-  document.getElementById('buyPunchBtn').addEventListener('click', buyPunch)
-  document.getElementById('buyCritBtn').addEventListener('click', buyCrit)
-  document.getElementById('randomBgBtn').addEventListener('click', randomBg)
-  document.getElementById('randomFontBtn').addEventListener('click', randomFont)
-  dailyBtn.addEventListener('click', claimDaily)
-  
-  emailInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
-  passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
-  
-  // Авто-вход
-  const savedEmail = localStorage.getItem('enft_email')
-  if (savedEmail) {
-    supabase.from('players').select('*').eq('email', savedEmail).maybeSingle().then(({ data }) => {
-      if (data) {
-        currentUser = data
-        authScreen.style.display = 'none'
-        mainScreen.style.display = 'block'
-        refreshUI()
-      }
-    })
-  }
-  
-  setInterval(() => { if (currentUser) updateDailyBonus() }, 1000)
-</script>
-</body>
-</html>
+    document.body.className =
