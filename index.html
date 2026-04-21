@@ -87,6 +87,18 @@
     .balance-label { font-size: 14px; letter-spacing: 3px; color: #cc9f5f; text-transform: uppercase; }
     .balance-value { font-size: 56px; font-weight: 800; color: #ffd28f; text-shadow: 0 0 30px #ff8c00; }
     
+    .energy-bar {
+      background: #1a1425; border: 1px solid #ff8c0050; border-radius: 50px;
+      padding: 12px 15px; margin: 15px 0;
+    }
+    .energy-header { display: flex; justify-content: space-between; color: #b89b72; font-size: 14px; margin-bottom: 8px; }
+    .energy-fill {
+      height: 12px; background: linear-gradient(90deg, #00ccff, #0066ff);
+      border-radius: 10px; transition: width 0.3s; width: 100%;
+    }
+    .energy-fill.low { background: linear-gradient(90deg, #ffaa00, #ff6600); }
+    .energy-fill.empty { background: linear-gradient(90deg, #ff4444, #cc0000); }
+    
     .stats-row {
       display: flex; justify-content: space-around; background: #1a1425;
       border-radius: 50px; padding: 12px; margin: 20px 0; border: 1px solid #ff8c0050;
@@ -242,6 +254,15 @@
         <div class="balance-value"><span id="balanceDisplay">0.0</span> ⚡</div>
       </div>
       
+      <!-- ЭНЕРГИЯ -->
+      <div class="energy-bar">
+        <div class="energy-header">
+          <span>🔋 Энергия</span>
+          <span id="energyText">100/100</span>
+        </div>
+        <div id="energyFill" class="energy-fill" style="width: 100%;"></div>
+      </div>
+      
       <div class="daily-card">
         <div class="daily-title">🎁 ЕЖЕДНЕВНЫЙ БОНУС</div>
         <div class="daily-timer" id="dailyTimer">Загрузка...</div>
@@ -289,6 +310,30 @@
         <button class="buy-btn" id="buyCritBtn">УЛУЧШИТЬ</button>
       </div>
       
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">🔋 МАКС ЭНЕРГИЯ</span>
+          <span class="upgrade-cost" id="energyCostDisplay">75</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+10 к максимуму</span>
+          <span class="level-badge" id="maxEnergyLevelDisplay">УР. 1</span>
+        </div>
+        <button class="buy-btn" id="buyEnergyBtn">УЛУЧШИТЬ</button>
+      </div>
+      
+      <div class="upgrade-card">
+        <div class="upgrade-header">
+          <span class="upgrade-title">⚡ РЕГЕНЕРАЦИЯ</span>
+          <span class="upgrade-cost" id="regenCostDisplay">60</span>
+        </div>
+        <div class="upgrade-desc">
+          <span>+0.5 энергии/сек</span>
+          <span class="level-badge" id="regenLevelDisplay">УР. 1</span>
+        </div>
+        <button class="buy-btn" id="buyRegenBtn">УЛУЧШИТЬ</button>
+      </div>
+      
       <div class="custom-section">
         <div class="custom-title">🎨 КАСТОМИЗАЦИЯ</div>
         <div class="custom-buttons">
@@ -314,17 +359,21 @@
 <script>
   // КОНФИГ SUPABASE
   const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtcnppaWZ5ZWtxbWJucHp1c2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyMjg4MDAsImV4cCI6MjA2MDgwNDgwMH0.sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9'
+  const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9'
   
-  // Проверяем ключ
   console.log('🔑 Подключение к Supabase...')
-  
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   
   let currentUser = null
+  let currentEnergy = 100
+  let maxEnergy = 100
+  let energyRegen = 1.0
+  
   const PUNCH_BASE = 50, PUNCH_MULT = 1.4, PUNCH_BONUS = 0.5
   const CRIT_BASE = 100, CRIT_MULT = 1.5, CRIT_BONUS = 2, MAX_CRIT = 50
   const BG_COST = 50, FONT_COST = 30
+  const ENERGY_BASE_COST = 75, REGEN_BASE_COST = 60
+  
   const BG_LIST = ['bg-default', 'bg-neon', 'bg-gold', 'bg-matrix', 'bg-sunset', 'bg-ocean']
   const BG_NAMES = ['Стандарт', 'Неон', 'Золото', 'Матрица', 'Закат', 'Океан']
   const FONT_LIST = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo']
@@ -354,16 +403,17 @@
   const coinGfx = document.getElementById('coinGfx')
   const currentBgName = document.getElementById('currentBgName')
   const currentFontName = document.getElementById('currentFontName')
+  const energyText = document.getElementById('energyText')
+  const energyFill = document.getElementById('energyFill')
+  const energyCostSpan = document.getElementById('energyCostDisplay')
+  const regenCostSpan = document.getElementById('regenCostDisplay')
+  const maxEnergyLevelSpan = document.getElementById('maxEnergyLevelDisplay')
+  const regenLevelSpan = document.getElementById('regenLevelDisplay')
   
   // Глазик
-  togglePassword.addEventListener('click', function() {
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text'
-      this.textContent = '🔒'
-    } else {
-      passwordInput.type = 'password'
-      this.textContent = '👁️'
-    }
+  togglePassword.addEventListener('click', () => {
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
+    togglePassword.textContent = passwordInput.type === 'password' ? '👁️' : '🔒'
   })
   
   // Вкладки
@@ -376,6 +426,15 @@
       if (tab.dataset.tab === 'leaderboard') updateLeaderboard()
     })
   })
+  
+  function updateEnergyUI() {
+    energyText.textContent = `${Math.floor(currentEnergy)}/${maxEnergy}`
+    const percent = (currentEnergy / maxEnergy) * 100
+    energyFill.style.width = percent + '%'
+    energyFill.className = 'energy-fill'
+    if (currentEnergy <= 0) energyFill.classList.add('empty')
+    else if (currentEnergy < maxEnergy * 0.3) energyFill.classList.add('low')
+  }
   
   function getTapPower() {
     return 1.0 + (currentUser?.punch_level || 0) * PUNCH_BONUS
@@ -393,9 +452,16 @@
     return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.crit_level || 0))
   }
   
+  function getEnergyCost() {
+    return ENERGY_BASE_COST * (currentUser?.max_energy_level || 1)
+  }
+  
+  function getRegenCost() {
+    return REGEN_BASE_COST * (currentUser?.regen_level || 1)
+  }
+  
   async function getLeaderboard() {
-    const { data, error } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
-    if (error) console.error('Ошибка загрузки топа:', error)
+    const { data } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
     return data || []
   }
   
@@ -430,6 +496,16 @@
     critLevelSpan.textContent = `УР. ${currentUser.crit_level || 0}`
     document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < critCost || getCritChance() >= MAX_CRIT)
     
+    const energyCost = getEnergyCost()
+    energyCostSpan.textContent = energyCost
+    maxEnergyLevelSpan.textContent = `УР. ${currentUser.max_energy_level || 1}`
+    document.getElementById('buyEnergyBtn').classList.toggle('disabled', currentUser.balance < energyCost)
+    
+    const regenCost = getRegenCost()
+    regenCostSpan.textContent = regenCost
+    regenLevelSpan.textContent = `УР. ${currentUser.regen_level || 1}`
+    document.getElementById('buyRegenBtn').classList.toggle('disabled', currentUser.balance < regenCost)
+    
     profileName.textContent = currentUser.email.split('@')[0]
     profileAvatar.textContent = currentUser.email[0].toUpperCase()
     
@@ -437,6 +513,7 @@
     currentBgName.textContent = BG_NAMES[BG_LIST.indexOf(currentUser.current_bg)] || 'Стандарт'
     currentFontName.textContent = FONT_NAMES[FONT_LIST.indexOf(currentUser.current_font)] || 'Inter'
     
+    updateEnergyUI()
     await updateDailyBonus()
   }
   
@@ -478,9 +555,7 @@
     currentUser.balance += bonus
     currentUser.last_daily = now
     
-    const { error } = await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
-    if (error) console.error('Ошибка бонуса:', error)
-    
+    await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
     messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`
     refreshUI()
   }
@@ -501,13 +576,7 @@
     
     authMessage.textContent = 'Загрузка...'
     
-    const { data, error } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
-    
-    if (error) {
-      authMessage.textContent = 'Ошибка сервера: ' + error.message
-      console.error(error)
-      return
-    }
+    const { data } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
     
     if (data) {
       if (data.password !== password) {
@@ -515,6 +584,9 @@
         return
       }
       currentUser = data
+      maxEnergy = data.max_energy || 100
+      energyRegen = data.energy_regen || 1.0
+      currentEnergy = data.current_energy ?? maxEnergy
       authMessage.textContent = ''
     } else {
       currentUser = {
@@ -522,14 +594,14 @@
         balance: 0, punch_level: 0, crit_level: 0,
         total_taps: 0, total_crits: 0, bg_purchases: 0,
         current_bg: 'bg-default', current_font: 'font-inter',
-        last_daily: null
+        last_daily: null,
+        max_energy: 100, current_energy: 100, energy_regen: 1.0,
+        max_energy_level: 1, regen_level: 1
       }
-      const { error: insertError } = await supabase.from('players').insert(currentUser)
-      if (insertError) {
-        authMessage.textContent = 'Ошибка регистрации: ' + insertError.message
-        console.error(insertError)
-        return
-      }
+      maxEnergy = 100
+      currentEnergy = 100
+      energyRegen = 1.0
+      await supabase.from('players').insert(currentUser)
       authMessage.textContent = ''
     }
     
@@ -542,83 +614,14 @@
   async function handleTap(e) {
     if (!currentUser) return
     
-    currentUser.total_taps = (currentUser.total_taps || 0) + 1
-    let earned = getTapPower()
+    let multiplier = 1.0
+    if (currentEnergy <= 0) multiplier = 0.5
+    
+    currentEnergy = Math.max(0, currentEnergy - 1)
+    
+    let earned = getTapPower() * multiplier
     const isCrit = Math.random() * 100 < getCritChance()
     
     if (isCrit) {
       earned *= 2
-      currentUser.total_crits = (currentUser.total_crits || 0) + 1
-      coinGfx.classList.add('crit')
-      setTimeout(() => coinGfx.classList.remove('crit'), 100)
-    }
-    
-    currentUser.balance += earned
-    
-    const float = document.createElement('div')
-    float.className = `floating-number${isCrit ? ' crit' : ''}`
-    float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`
-    float.style.left = (e.clientX - 20) + 'px'
-    float.style.top = (e.clientY - 30) + 'px'
-    document.body.appendChild(float)
-    setTimeout(() => float.remove(), 800)
-    
-    await supabase.from('players').update({
-      balance: currentUser.balance,
-      total_taps: currentUser.total_taps,
-      total_crits: currentUser.total_crits
-    }).eq('email', currentUser.email)
-    
-    refreshUI()
-    messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
-  }
-  
-  async function buyPunch() {
-    const cost = getPunchCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
-    currentUser.punch_level++
-    await supabase.from('players').update({ balance: currentUser.balance, punch_level: currentUser.punch_level }).eq('email', currentUser.email)
-    refreshUI()
-    messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
-  }
-  
-  async function buyCrit() {
-    if (getCritChance() >= MAX_CRIT) return
-    const cost = getCritCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
-    currentUser.crit_level++
-    await supabase.from('players').update({ balance: currentUser.balance, crit_level: currentUser.crit_level }).eq('email', currentUser.email)
-    refreshUI()
-    messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`
-  }
-  
-  async function randomBg() {
-    if (currentUser.balance < BG_COST) return
-    currentUser.balance -= BG_COST
-    currentUser.bg_purchases = (currentUser.bg_purchases || 0) + 1
-    const available = BG_LIST.filter(b => b !== currentUser.current_bg)
-    currentUser.current_bg = available[Math.floor(Math.random() * available.length)]
-    await supabase.from('players').update({ balance: currentUser.balance, bg_purchases: currentUser.bg_purchases, current_bg: currentUser.current_bg }).eq('email', currentUser.email)
-    refreshUI()
-  }
-  
-  async function randomFont() {
-    if (currentUser.balance < FONT_COST) return
-    currentUser.balance -= FONT_COST
-    const available = FONT_LIST.filter(f => f !== currentUser.current_font)
-    currentUser.current_font = available[Math.floor(Math.random() * available.length)]
-    await supabase.from('players').update({ balance: currentUser.balance, current_font: currentUser.current_font }).eq('email', currentUser.email)
-    refreshUI()
-  }
-  
-  function logout() {
-    currentUser = null
-    localStorage.removeItem('enft_email')
-    authScreen.style.display = 'block'
-    mainScreen.style.display = 'none'
-    emailInput.value = ''
-    passwordInput.value = ''
-    authMessage.textContent = ''
-    document.body.className =
+      currentUser.total_crits = (currentUser.total_crits
