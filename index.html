@@ -254,7 +254,6 @@
         <div class="balance-value"><span id="balanceDisplay">0.0</span> ⚡</div>
       </div>
       
-      <!-- ЭНЕРГИЯ -->
       <div class="energy-bar">
         <div class="energy-header">
           <span>🔋 Энергия</span>
@@ -361,7 +360,6 @@
   const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
   const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9'
   
-  console.log('🔑 Подключение к Supabase...')
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   
   let currentUser = null
@@ -379,7 +377,7 @@
   const FONT_LIST = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo']
   const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One']
   
-  // UI
+  // UI элементы
   const authScreen = document.getElementById('authScreen')
   const mainScreen = document.getElementById('mainScreen')
   const emailInput = document.getElementById('emailInput')
@@ -624,4 +622,148 @@
     
     if (isCrit) {
       earned *= 2
-      currentUser.total_crits = (currentUser.total_crits
+      currentUser.total_crits = (currentUser.total_crits || 0) + 1
+      coinGfx.classList.add('crit')
+      setTimeout(() => coinGfx.classList.remove('crit'), 100)
+    }
+    
+    currentUser.balance += earned
+    currentUser.total_taps = (currentUser.total_taps || 0) + 1
+    
+    await supabase.from('players').update({
+      balance: currentUser.balance,
+      total_taps: currentUser.total_taps,
+      total_crits: currentUser.total_crits,
+      current_energy: currentEnergy
+    }).eq('email', currentUser.email)
+    
+    refreshUI()
+    messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
+    
+    const float = document.createElement('div')
+    float.className = `floating-number${isCrit ? ' crit' : ''}`
+    float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`
+    float.style.left = (e.clientX - 20) + 'px'
+    float.style.top = (e.clientY - 30) + 'px'
+    document.body.appendChild(float)
+    setTimeout(() => float.remove(), 800)
+  }
+  
+  async function buyPunch() {
+    const cost = getPunchCost()
+    if (currentUser.balance < cost) return
+    currentUser.balance -= cost
+    currentUser.punch_level++
+    await supabase.from('players').update({ balance: currentUser.balance, punch_level: currentUser.punch_level }).eq('email', currentUser.email)
+    refreshUI()
+    messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
+  }
+  
+  async function buyCrit() {
+    if (getCritChance() >= MAX_CRIT) return
+    const cost = getCritCost()
+    if (currentUser.balance < cost) return
+    currentUser.balance -= cost
+    currentUser.crit_level++
+    await supabase.from('players').update({ balance: currentUser.balance, crit_level: currentUser.crit_level }).eq('email', currentUser.email)
+    refreshUI()
+    messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`
+  }
+  
+  async function buyMaxEnergy() {
+    const cost = getEnergyCost()
+    if (currentUser.balance < cost) return
+    currentUser.balance -= cost
+    currentUser.max_energy_level++
+    maxEnergy += 10
+    currentUser.max_energy = maxEnergy
+    await supabase.from('players').update({ balance: currentUser.balance, max_energy: maxEnergy, max_energy_level: currentUser.max_energy_level }).eq('email', currentUser.email)
+    refreshUI()
+    messageDiv.textContent = `🔋 Макс энергия: ${maxEnergy}`
+  }
+  
+  async function buyRegen() {
+    const cost = getRegenCost()
+    if (currentUser.balance < cost) return
+    currentUser.balance -= cost
+    currentUser.regen_level++
+    energyRegen += 0.5
+    currentUser.energy_regen = energyRegen
+    await supabase.from('players').update({ balance: currentUser.balance, energy_regen: energyRegen, regen_level: currentUser.regen_level }).eq('email', currentUser.email)
+    refreshUI()
+    messageDiv.textContent = `⚡ Регенерация: ${energyRegen}/сек`
+  }
+  
+  async function randomBg() {
+    if (currentUser.balance < BG_COST) return
+    currentUser.balance -= BG_COST
+    currentUser.bg_purchases = (currentUser.bg_purchases || 0) + 1
+    const available = BG_LIST.filter(b => b !== currentUser.current_bg)
+    currentUser.current_bg = available[Math.floor(Math.random() * available.length)]
+    await supabase.from('players').update({ balance: currentUser.balance, bg_purchases: currentUser.bg_purchases, current_bg: currentUser.current_bg }).eq('email', currentUser.email)
+    refreshUI()
+  }
+  
+  async function randomFont() {
+    if (currentUser.balance < FONT_COST) return
+    currentUser.balance -= FONT_COST
+    const available = FONT_LIST.filter(f => f !== currentUser.current_font)
+    currentUser.current_font = available[Math.floor(Math.random() * available.length)]
+    await supabase.from('players').update({ balance: currentUser.balance, current_font: currentUser.current_font }).eq('email', currentUser.email)
+    refreshUI()
+  }
+  
+  function logout() {
+    currentUser = null
+    localStorage.removeItem('enft_email')
+    authScreen.style.display = 'block'
+    mainScreen.style.display = 'none'
+    emailInput.value = ''
+    passwordInput.value = ''
+    authMessage.textContent = ''
+    document.body.className = 'bg-default font-inter'
+  }
+  
+  // Привязка событий
+  authBtn.addEventListener('click', loginOrRegister)
+  logoutBtn.addEventListener('click', logout)
+  document.getElementById('tapButton').addEventListener('click', handleTap)
+  document.getElementById('buyPunchBtn').addEventListener('click', buyPunch)
+  document.getElementById('buyCritBtn').addEventListener('click', buyCrit)
+  document.getElementById('buyEnergyBtn').addEventListener('click', buyMaxEnergy)
+  document.getElementById('buyRegenBtn').addEventListener('click', buyRegen)
+  document.getElementById('randomBgBtn').addEventListener('click', randomBg)
+  document.getElementById('randomFontBtn').addEventListener('click', randomFont)
+  dailyBtn.addEventListener('click', claimDaily)
+  
+  emailInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
+  passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
+  
+  // Авто-вход
+  const savedEmail = localStorage.getItem('enft_email')
+  if (savedEmail) {
+    supabase.from('players').select('*').eq('email', savedEmail).maybeSingle().then(({ data }) => {
+      if (data) {
+        currentUser = data
+        maxEnergy = data.max_energy || 100
+        energyRegen = data.energy_regen || 1.0
+        currentEnergy = data.current_energy ?? maxEnergy
+        authScreen.style.display = 'none'
+        mainScreen.style.display = 'block'
+        refreshUI()
+      }
+    })
+  }
+  
+  // Регенерация энергии
+  setInterval(() => {
+    if (currentUser && currentEnergy < maxEnergy) {
+      currentEnergy = Math.min(maxEnergy, currentEnergy + energyRegen)
+      updateEnergyUI()
+      supabase.from('players').update({ current_energy: currentEnergy }).eq('email', currentUser.email).then()
+    }
+    if (currentUser) updateDailyBonus()
+  }, 1000)
+</script>
+</body>
+</html>
