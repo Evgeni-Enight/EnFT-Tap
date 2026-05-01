@@ -359,7 +359,6 @@
   // КОНФИГ SUPABASE
   const SUPABASE_URL = 'https://hmrziifyekqmbnpzusjg.supabase.co'
   const SUPABASE_ANON_KEY = 'sb_publishable_x_cxT_vRQczSb_AgX80-0g_3a5-rs0CjF9'
-  
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   
   let currentUser = null
@@ -377,7 +376,6 @@
   const FONT_LIST = ['font-inter', 'font-roboto', 'font-montserrat', 'font-play', 'font-press-start', 'font-russo']
   const FONT_NAMES = ['Inter', 'Roboto', 'Montserrat', 'Play', 'Press Start', 'Russo One']
   
-  // UI элементы
   const authScreen = document.getElementById('authScreen')
   const mainScreen = document.getElementById('mainScreen')
   const emailInput = document.getElementById('emailInput')
@@ -385,36 +383,12 @@
   const authBtn = document.getElementById('authBtn')
   const authMessage = document.getElementById('authMessage')
   const togglePassword = document.getElementById('togglePassword')
-  const logoutBtn = document.getElementById('logoutBtn')
-  const profileName = document.getElementById('profileName')
-  const profileAvatar = document.getElementById('profileAvatar')
-  const balanceSpan = document.getElementById('balanceDisplay')
-  const tapPowerSpan = document.getElementById('tapPowerDisplay')
-  const critChanceSpan = document.getElementById('critChanceDisplay')
-  const punchCostSpan = document.getElementById('punchCostDisplay')
-  const critCostSpan = document.getElementById('critCostDisplay')
-  const punchLevelSpan = document.getElementById('punchLevelDisplay')
-  const critLevelSpan = document.getElementById('critLevelDisplay')
-  const dailyTimer = document.getElementById('dailyTimer')
-  const dailyBtn = document.getElementById('dailyBonusBtn')
-  const messageDiv = document.getElementById('messageArea')
-  const coinGfx = document.getElementById('coinGfx')
-  const currentBgName = document.getElementById('currentBgName')
-  const currentFontName = document.getElementById('currentFontName')
-  const energyText = document.getElementById('energyText')
-  const energyFill = document.getElementById('energyFill')
-  const energyCostSpan = document.getElementById('energyCostDisplay')
-  const regenCostSpan = document.getElementById('regenCostDisplay')
-  const maxEnergyLevelSpan = document.getElementById('maxEnergyLevelDisplay')
-  const regenLevelSpan = document.getElementById('regenLevelDisplay')
   
-  // Глазик
   togglePassword.addEventListener('click', () => {
     passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password'
     togglePassword.textContent = passwordInput.type === 'password' ? '👁️' : '🔒'
   })
   
-  // Вкладки
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
@@ -426,37 +400,21 @@
   })
   
   function updateEnergyUI() {
-    energyText.textContent = `${Math.floor(currentEnergy)}/${maxEnergy}`
+    document.getElementById('energyText').textContent = `${Math.floor(currentEnergy)}/${maxEnergy}`
     const percent = (currentEnergy / maxEnergy) * 100
-    energyFill.style.width = percent + '%'
-    energyFill.className = 'energy-fill'
-    if (currentEnergy <= 0) energyFill.classList.add('empty')
-    else if (currentEnergy < maxEnergy * 0.3) energyFill.classList.add('low')
+    const fill = document.getElementById('energyFill')
+    fill.style.width = percent + '%'
+    fill.className = 'energy-fill'
+    if (currentEnergy <= 0) fill.classList.add('empty')
+    else if (currentEnergy < maxEnergy * 0.3) fill.classList.add('low')
   }
   
-  function getTapPower() {
-    return 1.0 + (currentUser?.punch_level || 0) * PUNCH_BONUS
-  }
-  
-  function getCritChance() {
-    return Math.min((currentUser?.crit_level || 0) * CRIT_BONUS, MAX_CRIT)
-  }
-  
-  function getPunchCost() {
-    return Math.floor(PUNCH_BASE * Math.pow(PUNCH_MULT, currentUser?.punch_level || 0))
-  }
-  
-  function getCritCost() {
-    return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.crit_level || 0))
-  }
-  
-  function getEnergyCost() {
-    return ENERGY_BASE_COST * (currentUser?.max_energy_level || 1)
-  }
-  
-  function getRegenCost() {
-    return REGEN_BASE_COST * (currentUser?.regen_level || 1)
-  }
+  function getTapPower() { return 1.0 + (currentUser?.punch_level || 0) * PUNCH_BONUS }
+  function getCritChance() { return Math.min((currentUser?.crit_level || 0) * CRIT_BONUS, MAX_CRIT) }
+  function getPunchCost() { return Math.floor(PUNCH_BASE * Math.pow(PUNCH_MULT, currentUser?.punch_level || 0)) }
+  function getCritCost() { return Math.floor(CRIT_BASE * Math.pow(CRIT_MULT, currentUser?.crit_level || 0)) }
+  function getEnergyCost() { return ENERGY_BASE_COST * (currentUser?.max_energy_level || 1) }
+  function getRegenCost() { return REGEN_BASE_COST * (currentUser?.regen_level || 1) }
   
   async function getLeaderboard() {
     const { data } = await supabase.from('players').select('email,balance').order('balance', { ascending: false }).limit(10)
@@ -465,51 +423,41 @@
   
   async function updateLeaderboard() {
     const data = await getLeaderboard()
-    const list = document.getElementById('leaderboardList')
-    list.innerHTML = data.map((p, i) => {
+    document.getElementById('leaderboardList').innerHTML = data.map((p, i) => {
       const rank = i + 1
       const badge = rank <= 5 ? '<span class="top-badge">x3</span>' : rank <= 10 ? '<span class="top-badge">x2</span>' : ''
-      return `<div class="leaderboard-item">
-        <span class="leaderboard-rank">#${rank}</span>
-        <span class="leaderboard-name">${p.email.split('@')[0]} ${badge}</span>
-        <span class="leaderboard-balance">${(p.balance || 0).toFixed(1)} ⚡</span>
-      </div>`
+      return `<div class="leaderboard-item"><span class="leaderboard-rank">#${rank}</span><span class="leaderboard-name">${p.email.split('@')[0]} ${badge}</span><span class="leaderboard-balance">${(p.balance||0).toFixed(1)} ⚡</span></div>`
     }).join('')
   }
   
   async function refreshUI() {
     if (!currentUser) return
+    document.getElementById('balanceDisplay').textContent = (currentUser.balance||0).toFixed(1)
+    document.getElementById('tapPowerDisplay').textContent = getTapPower().toFixed(1)
+    document.getElementById('critChanceDisplay').textContent = getCritChance() + '%'
     
-    balanceSpan.textContent = (currentUser.balance || 0).toFixed(1)
-    tapPowerSpan.textContent = getTapPower().toFixed(1)
-    critChanceSpan.textContent = getCritChance() + '%'
+    const pc = getPunchCost(); document.getElementById('punchCostDisplay').textContent = pc
+    document.getElementById('punchLevelDisplay').textContent = `УР. ${currentUser.punch_level||0}`
+    document.getElementById('buyPunchBtn').classList.toggle('disabled', currentUser.balance < pc)
     
-    const punchCost = getPunchCost()
-    punchCostSpan.textContent = punchCost
-    punchLevelSpan.textContent = `УР. ${currentUser.punch_level || 0}`
-    document.getElementById('buyPunchBtn').classList.toggle('disabled', currentUser.balance < punchCost)
+    const cc = getCritCost(); document.getElementById('critCostDisplay').textContent = cc
+    document.getElementById('critLevelDisplay').textContent = `УР. ${currentUser.crit_level||0}`
+    document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < cc || getCritChance() >= MAX_CRIT)
     
-    const critCost = getCritCost()
-    critCostSpan.textContent = critCost
-    critLevelSpan.textContent = `УР. ${currentUser.crit_level || 0}`
-    document.getElementById('buyCritBtn').classList.toggle('disabled', currentUser.balance < critCost || getCritChance() >= MAX_CRIT)
+    const ec = getEnergyCost(); document.getElementById('energyCostDisplay').textContent = ec
+    document.getElementById('maxEnergyLevelDisplay').textContent = `УР. ${currentUser.max_energy_level||1}`
+    document.getElementById('buyEnergyBtn').classList.toggle('disabled', currentUser.balance < ec)
     
-    const energyCost = getEnergyCost()
-    energyCostSpan.textContent = energyCost
-    maxEnergyLevelSpan.textContent = `УР. ${currentUser.max_energy_level || 1}`
-    document.getElementById('buyEnergyBtn').classList.toggle('disabled', currentUser.balance < energyCost)
+    const rc = getRegenCost(); document.getElementById('regenCostDisplay').textContent = rc
+    document.getElementById('regenLevelDisplay').textContent = `УР. ${currentUser.regen_level||1}`
+    document.getElementById('buyRegenBtn').classList.toggle('disabled', currentUser.balance < rc)
     
-    const regenCost = getRegenCost()
-    regenCostSpan.textContent = regenCost
-    regenLevelSpan.textContent = `УР. ${currentUser.regen_level || 1}`
-    document.getElementById('buyRegenBtn').classList.toggle('disabled', currentUser.balance < regenCost)
+    document.getElementById('profileName').textContent = currentUser.email.split('@')[0]
+    document.getElementById('profileAvatar').textContent = currentUser.email[0].toUpperCase()
     
-    profileName.textContent = currentUser.email.split('@')[0]
-    profileAvatar.textContent = currentUser.email[0].toUpperCase()
-    
-    document.body.className = `${currentUser.current_bg || 'bg-default'} ${currentUser.current_font || 'font-inter'}`
-    currentBgName.textContent = BG_NAMES[BG_LIST.indexOf(currentUser.current_bg)] || 'Стандарт'
-    currentFontName.textContent = FONT_NAMES[FONT_LIST.indexOf(currentUser.current_font)] || 'Inter'
+    document.body.className = `${currentUser.current_bg||'bg-default'} ${currentUser.current_font||'font-inter'}`
+    document.getElementById('currentBgName').textContent = BG_NAMES[BG_LIST.indexOf(currentUser.current_bg)] || 'Стандарт'
+    document.getElementById('currentFontName').textContent = FONT_NAMES[FONT_LIST.indexOf(currentUser.current_font)] || 'Inter'
     
     updateEnergyUI()
     await updateDailyBonus()
@@ -519,90 +467,58 @@
     const now = Date.now()
     const last = currentUser.last_daily ? new Date(currentUser.last_daily).getTime() : 0
     const left = last + 86400000 - now
-    
     const lb = await getLeaderboard()
     const rank = lb.findIndex(p => p.email === currentUser.email) + 1
     let bonus = 50
     if (rank <= 5) bonus = 150
     else if (rank <= 10) bonus = 100
-    
-    const multiplier = rank <= 5 ? ' (ТОП-5 x3!)' : rank <= 10 ? ' (ТОП-10 x2!)' : ''
+    const mult = rank <= 5 ? ' (ТОП-5 x3!)' : rank <= 10 ? ' (ТОП-10 x2!)' : ''
     
     if (left <= 0) {
-      dailyTimer.textContent = `+${bonus} EnFT доступно!${multiplier}`
-      dailyBtn.classList.remove('disabled')
+      document.getElementById('dailyTimer').textContent = `+${bonus} EnFT доступно!${mult}`
+      document.getElementById('dailyBonusBtn').classList.remove('disabled')
     } else {
-      const h = Math.floor(left / 3600000)
-      const m = Math.floor((left % 3600000) / 60000)
-      dailyTimer.textContent = `Через ${h}ч ${m}м (бонус: ${bonus}${multiplier})`
-      dailyBtn.classList.add('disabled')
+      const h = Math.floor(left/3600000), m = Math.floor((left%3600000)/60000)
+      document.getElementById('dailyTimer').textContent = `Через ${h}ч ${m}м (бонус: ${bonus}${mult})`
+      document.getElementById('dailyBonusBtn').classList.add('disabled')
     }
   }
   
   async function claimDaily() {
     const now = new Date().toISOString()
-    const last = currentUser.last_daily ? new Date(currentUser.last_daily).getTime() : 0
-    if (Date.now() - last < 86400000) return
-    
+    if (Date.now() - (currentUser.last_daily ? new Date(currentUser.last_daily).getTime() : 0) < 86400000) return
     const lb = await getLeaderboard()
     const rank = lb.findIndex(p => p.email === currentUser.email) + 1
     let bonus = 50
     if (rank <= 5) bonus = 150
     else if (rank <= 10) bonus = 100
-    
     currentUser.balance += bonus
     currentUser.last_daily = now
-    
     await supabase.from('players').update({ balance: currentUser.balance, last_daily: now }).eq('email', currentUser.email)
-    messageDiv.textContent = `🎁 Получено ${bonus} EnFT!`
+    document.getElementById('messageArea').textContent = `🎁 Получено ${bonus} EnFT!`
     refreshUI()
   }
   
   async function loginOrRegister() {
     const email = emailInput.value.trim().toLowerCase()
     const password = passwordInput.value
-    
-    if (!email.includes('@') || !email.includes('.')) {
-      authMessage.textContent = 'Введи корректный email'
-      return
-    }
-    
-    if (password.length < 6) {
-      authMessage.textContent = 'Пароль минимум 6 символов'
-      return
-    }
-    
+    if (!email.includes('@') || !email.includes('.')) { authMessage.textContent = 'Введи корректный email'; return }
+    if (password.length < 6) { authMessage.textContent = 'Пароль минимум 6 символов'; return }
     authMessage.textContent = 'Загрузка...'
     
     const { data } = await supabase.from('players').select('*').eq('email', email).maybeSingle()
-    
     if (data) {
-      if (data.password !== password) {
-        authMessage.textContent = 'Неверный пароль'
-        return
-      }
+      if (data.password !== password) { authMessage.textContent = 'Неверный пароль'; return }
       currentUser = data
       maxEnergy = data.max_energy || 100
       energyRegen = data.energy_regen || 1.0
       currentEnergy = data.current_energy ?? maxEnergy
-      authMessage.textContent = ''
     } else {
-      currentUser = {
-        email, password,
-        balance: 0, punch_level: 0, crit_level: 0,
-        total_taps: 0, total_crits: 0, bg_purchases: 0,
-        current_bg: 'bg-default', current_font: 'font-inter',
-        last_daily: null,
-        max_energy: 100, current_energy: 100, energy_regen: 1.0,
-        max_energy_level: 1, regen_level: 1
-      }
-      maxEnergy = 100
-      currentEnergy = 100
-      energyRegen = 1.0
+      currentUser = { email, password, balance: 0, punch_level: 0, crit_level: 0, total_taps: 0, total_crits: 0, bg_purchases: 0, current_bg: 'bg-default', current_font: 'font-inter', last_daily: null, max_energy: 100, current_energy: 100, energy_regen: 1.0, max_energy_level: 1, regen_level: 1 }
+      maxEnergy = 100; currentEnergy = 100; energyRegen = 1.0
       await supabase.from('players').insert(currentUser)
-      authMessage.textContent = ''
     }
-    
+    authMessage.textContent = ''
     localStorage.setItem('enft_email', email)
     authScreen.style.display = 'none'
     mainScreen.style.display = 'block'
@@ -611,95 +527,82 @@
   
   async function handleTap(e) {
     if (!currentUser) return
-    
-    let multiplier = 1.0
-    if (currentEnergy <= 0) multiplier = 0.5
-    
+    let mult = 1.0
+    if (currentEnergy <= 0) mult = 0.5
     currentEnergy = Math.max(0, currentEnergy - 1)
-    
-    let earned = getTapPower() * multiplier
+    let earned = getTapPower() * mult
     const isCrit = Math.random() * 100 < getCritChance()
-    
     if (isCrit) {
       earned *= 2
-      currentUser.total_crits = (currentUser.total_crits || 0) + 1
-      coinGfx.classList.add('crit')
-      setTimeout(() => coinGfx.classList.remove('crit'), 100)
+      currentUser.total_crits = (currentUser.total_crits||0) + 1
+      document.getElementById('coinGfx').classList.add('crit')
+      setTimeout(() => document.getElementById('coinGfx').classList.remove('crit'), 100)
     }
-    
     currentUser.balance += earned
-    currentUser.total_taps = (currentUser.total_taps || 0) + 1
-    
-    await supabase.from('players').update({
-      balance: currentUser.balance,
-      total_taps: currentUser.total_taps,
-      total_crits: currentUser.total_crits,
-      current_energy: currentEnergy
-    }).eq('email', currentUser.email)
-    
+    currentUser.total_taps = (currentUser.total_taps||0) + 1
+    await supabase.from('players').update({ balance: currentUser.balance, total_taps: currentUser.total_taps, total_crits: currentUser.total_crits, current_energy: currentEnergy }).eq('email', currentUser.email)
     refreshUI()
-    messageDiv.textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
-    
-    const float = document.createElement('div')
-    float.className = `floating-number${isCrit ? ' crit' : ''}`
-    float.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`
-    float.style.left = (e.clientX - 20) + 'px'
-    float.style.top = (e.clientY - 30) + 'px'
-    document.body.appendChild(float)
-    setTimeout(() => float.remove(), 800)
+    document.getElementById('messageArea').textContent = isCrit ? `💥 КРИТ! +${earned.toFixed(1)}` : `+${earned.toFixed(1)}`
+    const fl = document.createElement('div')
+    fl.className = `floating-number${isCrit ? ' crit' : ''}`
+    fl.textContent = `+${earned.toFixed(1)}${isCrit ? ' 💥' : ''}`
+    fl.style.left = (e.clientX-20)+'px'
+    fl.style.top = (e.clientY-30)+'px'
+    document.body.appendChild(fl)
+    setTimeout(() => fl.remove(), 800)
   }
   
   async function buyPunch() {
-    const cost = getPunchCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
+    const c = getPunchCost()
+    if (currentUser.balance < c) return
+    currentUser.balance -= c
     currentUser.punch_level++
     await supabase.from('players').update({ balance: currentUser.balance, punch_level: currentUser.punch_level }).eq('email', currentUser.email)
     refreshUI()
-    messageDiv.textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
+    document.getElementById('messageArea').textContent = `✅ Удар улучшен до ур. ${currentUser.punch_level}!`
   }
   
   async function buyCrit() {
     if (getCritChance() >= MAX_CRIT) return
-    const cost = getCritCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
+    const c = getCritCost()
+    if (currentUser.balance < c) return
+    currentUser.balance -= c
     currentUser.crit_level++
     await supabase.from('players').update({ balance: currentUser.balance, crit_level: currentUser.crit_level }).eq('email', currentUser.email)
     refreshUI()
-    messageDiv.textContent = `🎯 Шанс крита: ${getCritChance()}%`
+    document.getElementById('messageArea').textContent = `🎯 Шанс крита: ${getCritChance()}%`
   }
   
   async function buyMaxEnergy() {
-    const cost = getEnergyCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
+    const c = getEnergyCost()
+    if (currentUser.balance < c) return
+    currentUser.balance -= c
     currentUser.max_energy_level++
     maxEnergy += 10
     currentUser.max_energy = maxEnergy
     await supabase.from('players').update({ balance: currentUser.balance, max_energy: maxEnergy, max_energy_level: currentUser.max_energy_level }).eq('email', currentUser.email)
     refreshUI()
-    messageDiv.textContent = `🔋 Макс энергия: ${maxEnergy}`
+    document.getElementById('messageArea').textContent = `🔋 Макс энергия: ${maxEnergy}`
   }
   
   async function buyRegen() {
-    const cost = getRegenCost()
-    if (currentUser.balance < cost) return
-    currentUser.balance -= cost
+    const c = getRegenCost()
+    if (currentUser.balance < c) return
+    currentUser.balance -= c
     currentUser.regen_level++
     energyRegen += 0.5
     currentUser.energy_regen = energyRegen
     await supabase.from('players').update({ balance: currentUser.balance, energy_regen: energyRegen, regen_level: currentUser.regen_level }).eq('email', currentUser.email)
     refreshUI()
-    messageDiv.textContent = `⚡ Регенерация: ${energyRegen}/сек`
+    document.getElementById('messageArea').textContent = `⚡ Регенерация: ${energyRegen}/сек`
   }
   
   async function randomBg() {
     if (currentUser.balance < BG_COST) return
     currentUser.balance -= BG_COST
-    currentUser.bg_purchases = (currentUser.bg_purchases || 0) + 1
-    const available = BG_LIST.filter(b => b !== currentUser.current_bg)
-    currentUser.current_bg = available[Math.floor(Math.random() * available.length)]
+    currentUser.bg_purchases = (currentUser.bg_purchases||0) + 1
+    const av = BG_LIST.filter(b => b !== currentUser.current_bg)
+    currentUser.current_bg = av[Math.floor(Math.random()*av.length)]
     await supabase.from('players').update({ balance: currentUser.balance, bg_purchases: currentUser.bg_purchases, current_bg: currentUser.current_bg }).eq('email', currentUser.email)
     refreshUI()
   }
@@ -707,8 +610,8 @@
   async function randomFont() {
     if (currentUser.balance < FONT_COST) return
     currentUser.balance -= FONT_COST
-    const available = FONT_LIST.filter(f => f !== currentUser.current_font)
-    currentUser.current_font = available[Math.floor(Math.random() * available.length)]
+    const av = FONT_LIST.filter(f => f !== currentUser.current_font)
+    currentUser.current_font = av[Math.floor(Math.random()*av.length)]
     await supabase.from('players').update({ balance: currentUser.balance, current_font: currentUser.current_font }).eq('email', currentUser.email)
     refreshUI()
   }
@@ -724,9 +627,8 @@
     document.body.className = 'bg-default font-inter'
   }
   
-  // Привязка событий
   authBtn.addEventListener('click', loginOrRegister)
-  logoutBtn.addEventListener('click', logout)
+  document.getElementById('logoutBtn').addEventListener('click', logout)
   document.getElementById('tapButton').addEventListener('click', handleTap)
   document.getElementById('buyPunchBtn').addEventListener('click', buyPunch)
   document.getElementById('buyCritBtn').addEventListener('click', buyCrit)
@@ -734,12 +636,11 @@
   document.getElementById('buyRegenBtn').addEventListener('click', buyRegen)
   document.getElementById('randomBgBtn').addEventListener('click', randomBg)
   document.getElementById('randomFontBtn').addEventListener('click', randomFont)
-  dailyBtn.addEventListener('click', claimDaily)
+  document.getElementById('dailyBonusBtn').addEventListener('click', claimDaily)
   
   emailInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
   passwordInput.addEventListener('keypress', e => { if (e.key === 'Enter') loginOrRegister() })
   
-  // Авто-вход
   const savedEmail = localStorage.getItem('enft_email')
   if (savedEmail) {
     supabase.from('players').select('*').eq('email', savedEmail).maybeSingle().then(({ data }) => {
@@ -755,7 +656,6 @@
     })
   }
   
-  // Регенерация энергии
   setInterval(() => {
     if (currentUser && currentEnergy < maxEnergy) {
       currentEnergy = Math.min(maxEnergy, currentEnergy + energyRegen)
